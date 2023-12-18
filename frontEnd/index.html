@@ -18,18 +18,79 @@
         <nav>
 
             <div class="logo">
-                <img src="assets/logo.png">
+                <a href="#"><img src="assets/logo.png"></a>
             </div>
 
             <div class="menu">
-
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Session Hub</a></li>
+                    <li><a href="#">Account</a></li>
+                </ul>
             </div>
 
         </nav>
 
+        <div class="information">
+
+            <img src="assets/icon.png" class="focus">
+
+            <div id="circle">
+                <div class="feature one">
+                    <img src="assets/icon.png">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+                <div class="feature two">
+                    <img src="assets/icon.png">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+                <div class="feature three">
+                    <img src="assets/icon.png">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+                <div class="feature four">
+                    <img src="assets/icon.png">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="controls">
+            <img src="assets/arrow.png" id="upbtn">
+            <h3> </h3>
+            <img src="assets/arrow.png" id="dwnbtn">
+        </div>
+
     </div>
 
-    <p>placeHolder :)</p>
+    <script>
+        var circle = document.getElementById("circle");
+        var upbtn = document.getElementById("upbtn");
+        var dwnbtn = document.getElementById("dwnbtn");
+
+        var rotateValue = circle.style.transform;
+        var rotateSum;
+
+        upbtn.onlick = function() {
+            rotateSum = rotateValue + "rotate(-90deg)";
+            circle.style.transform = rotateSum;
+            rotateValue = rotateSum;
+        }
+    </script>
 
 </body>
 </html>
