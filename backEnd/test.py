@@ -10,7 +10,7 @@ response=vclient.chat.completions.create(model=model_id, messages=[
 import openai
 import os
 key= "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"
-system = [{"role": "system", "content": "You are a helpful AI assistant."}]
+system = [{"role": "system", "content": "You are a peer support companion to an autistic student to help them learn social skills."}]
 user = [{"role": "user", "content": "Introduce yourself."}]
 chat = []
 vclient=openai.OpenAI(api_key=key)
