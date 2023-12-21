@@ -20,8 +20,8 @@ while not user[0]['content'] == "exit":
         model="gpt-3.5-turbo", stream=True)
     reply = ""
     for delta in response:
-        if not delta['choices'][0]['finish_reason']:
-            word = delta['choices'][0]['delta']['content']
+        if not delta.choices[0].finish_reason:
+            word = delta.choices[0].delta.content
             reply += word
             print(word, end ="")
     chat += user + [{"role": "assistant", "content": reply}]
