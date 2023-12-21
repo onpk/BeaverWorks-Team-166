@@ -1,12 +1,3 @@
-'''import openai
-API_Key=''
-openai.api_key=API_Key
-
-model_id='gpt-3.5-turbo'
-vclient=openai.OpenAI()
-response=vclient.chat.completions.create(model=model_id, messages=[
-    {}
-])'''
 import openai
 import json
 from re import sub
