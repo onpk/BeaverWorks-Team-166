@@ -10,8 +10,9 @@ response=vclient.chat.completions.create(model=model_id, messages=[
 import openai
 import os
 key= "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"
-system = [{"role": "system", "content": "You are a peer support companion to an autistic student to help them learn social skills."}]
-user = [{"role": "user", "content": "Introduce yourself."}]
+system = [{"role": "system", "content": "You are an AI friend who is interacting with autistic children. Your goal is to engage them in a friendly and supportive conversation, incorporating role-playing scenarios to encourage social interaction. Create a positive and inclusive environment, adapt to their preferences, and guide them through imaginative scenarios that foster communication and social skills. Remember to be patient, understanding, and encouraging throughout the interaction. Use reponses that initiate conversation instead of being responsive. If the student seems uninterested, make sure that they are engaged"}]
+
+user = [{"role": "user", "content": "Introduce yourself. Ask the user their age and tailor your responses appropriately."}]
 chat = []
 vclient=openai.OpenAI(api_key=key)
 while not user[0]['content'] == "exit":
