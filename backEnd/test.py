@@ -30,10 +30,16 @@ if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
         elif chat[c]["role"]=="assistant":
             assistant+=chat[c]["content"]
         else:
-            temp=chat[c]["content"].split()
+            cont=chat[c]["content"]
+            temp=cont.split()
             for i in temp:
                 if i=="I'm":
                     name=sub(r'\W+', '',temp[temp.index(i)+1])
+            if ("apologize" or "sorry") in  cont:
+                   pass
+            else:
+                assistant+=cont
+
     intromessage+="These are previous messages you sent. Remember them as you write your responses. "+assistant+" These are the messages that the user sent. Remember these as well when you write your responses. "+user
     system = [{"role": "system", "content":intromessage}]
     user = [{"role": "user", "content":"Reintroduce yourself as "+name+". Start a conversation with the user."}]
@@ -48,7 +54,7 @@ else:
            Remember to be patient, understanding, and encouraging throughout the interaction. Use reponses that initiate conversation instead of being responsive. 
            If the student seems uninterested, make sure that they are engaged"""}]
 
-    user = [{"role": "user", "content": "Introduce yourself. Ask the user their age and tailor your responses appropriately."}]
+    user = [{"role": "user", "content": "Introduce yourself with a name. Ask the user their age and tailor your responses appropriately."}]
     chat = []
 
 vclient = openai.OpenAI(api_key=key)
@@ -75,5 +81,6 @@ while not user[0]['content'] == sub(r'\W+', '',"bye"):
     system = [{"role": "system", "content": reply}]
 
     # Save the updated conversation to the JSON file
-    with open(output_file_path, 'w') as json_file:
+#chats.update(chat)
+    with open(output_file_path, 'a') as json_file:
         json.dump(chat, json_file, indent=2)
