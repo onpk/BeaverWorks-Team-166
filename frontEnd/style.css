@@ -41,3 +41,17 @@ nav{
     color: #203640;
     text-decoration: none;
 }
+
+.quickAccess{
+    margin: 100px;
+    margin-top: 30px;
+}
+.quickAccess h1{
+    position: static;
+    color: #203640;
+}
+.quickAccess img{
+    width: 20px;
+}
+.quickAccess p{
+}
