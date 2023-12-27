@@ -2,6 +2,7 @@ import openai
 import json
 import os
 from re import sub
+from voicetotext import speech
 key = "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"
 output_file_path = "conversation.json"
 
@@ -73,7 +74,8 @@ while not user[0]['content'] == sub(r'\W+', '',"bye"):
             print(word, end="")
 
     # Add the user's input and AI's response to the chat history
-    user_input = input("\nYou: ")
+    print("You: ")
+    user_speaks = speech()
     user = [{"role": "user", "content": user_input}]
     chat.append(user[0])
     
