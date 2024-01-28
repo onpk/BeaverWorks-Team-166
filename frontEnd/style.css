@@ -59,10 +59,12 @@ nav{
     text-align: right;
     z-index: 1;
 }
+
 .menu ul li{
     list-style: none;
     display: inline-block;
     margin: 0 20px;
+    text-align: center;
 }
 .menu ul li a{
     color: #203640;
@@ -70,8 +72,8 @@ nav{
 }
 
 .dashboard{
-    margin: 100px;
-    margin-top: 40px;
+    margin: 0px;
+    margin-top: 100px;
     flex: 1;
     text-align: center;
 }
@@ -90,6 +92,7 @@ nav{
     margin-bottom: 35px;
     margin-right: 40px;
     transform: translateX(30px);
+    text-align: center;
 }
 .dashboard ul li a{
     color: #203640;
@@ -190,4 +193,16 @@ nav{
     left: 0;
     top: 0;
     z-index: 2;
+}
+
+.progress {
+    height: 7px;
+    width: 100px;
+    margin-top: 10px;
+    background-color: lightgray;
+    border-radius: 20%;
+}
+
+.categories img{
+    width: 85px;
 }
