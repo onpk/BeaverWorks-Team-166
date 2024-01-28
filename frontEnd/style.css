@@ -197,12 +197,17 @@ nav{
 
 .progress {
     height: 7px;
-    width: 100px;
     margin-top: 10px;
     background-color: lightgray;
     border-radius: 20%;
 }
 
+.fill {
+    height: 7px;
+    border-radius:20%;
+    background-color: #2559B1;
+}
+
 .categories img{
-    width: 85px;
+    width: 80px;
 }
