@@ -2,44 +2,74 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF=8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Account</title>
     <link rel="icon" type="image/x-icon" href="assets/icon.png">
     <link rel="stylesheet" href="style.css">
-
 </head>
+
 <body>
-
     <div class="main">
-
         <div class="header">
-
-        <nav>
-
-            <div class="logo">
-                <a href="index.html"><img src="assets/logo.png"></a>
-            </div>
-
-            <div class="menu">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="account.html">Account</a></li>
-                </ul>
-            </div>
-
-        </nav>
-
+            <nav>
+                <div class="logo">
+                    <a href="index.html"><img src="assets/logo.png"></a>
+                </div>
+                <div class="menu">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="account.html">Account</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-
     </div>
 
     <div class="banner">
-
+        <h2>Update Your Interests</h2>
+        <form id="interestForm">
+            <label for="interests">Enter your interests:</label>
+            <input type="text" id="interests" name="interests" required>
+            <button type="button" onclick="saveInterests()">Save Interests</button>
+        </form>
     </div>
 
+    <script>
+        function saveInterests() {
+            // Get user interests from the form
+            var userInterests = document.getElementById("interests").value;
+
+            // Create an object to store user data
+            var userData = {
+                interests: userInterests
+            };
+
+            // Convert the data to JSON format
+            var jsonData = JSON.stringify(userData);
+
+            // Send the data to the server (you'll need a server-side script to handle this)
+            // Example using Fetch API:
+            fetch('saveUserData.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: jsonData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Interests saved successfully!');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error saving interests. Please try again.');
+            });
+        }
+    </script>
 </body>
+
 </html>
