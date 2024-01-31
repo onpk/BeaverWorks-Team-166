@@ -15,7 +15,7 @@
         <div class="header">
             <nav>
                 <div class="logo">
-                    <a href="index.html"><img src="assets/logo.png"></a>
+                    <a href="index.html"><img src="assets/logo.png" alt="Logo"></a>
                 </div>
                 <div class="menu">
                     <ul>
@@ -50,8 +50,7 @@
             // Convert the data to JSON format
             var jsonData = JSON.stringify(userData);
 
-            // Send the data to the server (you'll need a server-side script to handle this)
-            // Example using Fetch API:
+            // Send the data to the server using Fetch API
             fetch('saveUserData.php', {
                 method: 'POST',
                 headers: {
