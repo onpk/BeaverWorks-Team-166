@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>OnCall</title>
-    <link rel="icon" type="image/x-icon" href="assets/icon.png">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 
 </head>
@@ -20,14 +20,14 @@
         <nav>
 
             <div class="logo">
-                <a href="{{ url_for('static', filename='index.html') }}"><img src="{{ url_for('static', filename='images/logo.jpg') }}"></a>
+                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"></a>
             </div>
 
             <div class="menu">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="account.html">Account</a></li>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('account') }}">Account</a></li>
                 </ul>
             </div>
 
@@ -40,28 +40,28 @@
 
             <div id="circle">
                 <div class="feature one">
-                    <img src="assets/icon.png">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
                     <div>
                         <h1>Placeholder</h1>
                         <p>[Insert Autism Statistic]</p>
                     </div>
                 </div>
                 <div class="feature two">
-                    <img src="assets/icon.png">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
                     <div>
                         <h1>Placeholder</h1>
                         <p>[Insert Autism Statistic]</p>
                     </div>
                 </div>
                 <div class="feature three">
-                    <img src="assets/icon.png">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
                     <div>
                         <h1>Placeholder</h1>
                         <p>[Insert Autism Statistic]</p>
                     </div>
                 </div>
                 <div class="feature four">
-                    <img src="assets/icon.png">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
                     <div>
                         <h1>Placeholder</h1>
                         <p>[Insert Autism Statistic]</p>
@@ -72,16 +72,16 @@
         </div>
 
         <div class="controls">
-            <img src="assets/arrow.png" id="upbtn">
+            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="upbtn">
             <h3> </h3>
-            <img src="assets/arrow.png" id="dwnbtn">
+            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="dwnbtn">
         </div>
 
         </div>
     
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 
 </body>
 </html>

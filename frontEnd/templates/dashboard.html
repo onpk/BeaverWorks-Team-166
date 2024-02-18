@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard</title>
-    <link rel="icon" type="image/x-icon" href="assets/icon.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 <body>
@@ -20,14 +20,14 @@
         <nav>
 
             <div class="logo">
-                <a href="index.html"><img src="assets/logo.png"></a>
+                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"></a>
             </div>
 
             <div class="menu">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="account.html">Account</a></li>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('account') }}">Account</a></li>
                 </ul>
             </div>
 
@@ -40,15 +40,15 @@
             <div class="row1">
             <ul>
                 <li>
-                    <a href="subpages/startSession.html"><img src="assets/startSession.png"></a>
+                    <a href="{{ url_for('startSession') }}"><img src="{{ url_for('static', filename='images/startSession.png') }}"></a>
                     <p>Start Session</p>
                 </li>
                 <li>
-                    <a href="https://www.autismspeaks.org/resource-guide" target="_blank" rel="noopener noreferrer"><img src="assets/autismResources.png"></a>
+                    <a href="{{ url_for('autismResources') }}" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/autismResources.png') }}"></a>
                     <p>Autism Resources</p>
                 </li>
                 <li>
-                    <a href="account.html"><img src="assets/account.png"></a>
+                    <a href="{{ url_for('account') }}"><img src="{{ url_for('static', filename='images/account.png') }}"></a>
                     <p>Account</p>
                 </li>
             </ul>
@@ -57,15 +57,15 @@
             <div class="row2">
             <ul>
                 <li>
-                    <a href="subpages/settings.html"><img src="assets/settings.png"></a>
+                    <a href="{{ url_for('settings') }}"><img src="{{ url_for('static', filename='images/settings.png') }}"></a>
                     <p>Settings</p>
                 </li>
                 <li>
-                    <a href="subpages/statistics.html"><img src="assets/statistics.png"></a>
+                    <a href="{{ url_for('statistics') }}"><img src="{{ url_for('static', filename='images/statistics.png') }}"></a>
                     <p>Statistics</p>
                 </li>
                 <li>
-                    <a href="subpages/history.html"><img src="assets/history.png"></a>
+                    <a href="{{ url_for('history')}}"><img src="{{ url_for('static', filename='images/history.png') }}"></a>
                     <p>History</p>
                 </li>
             </ul>
