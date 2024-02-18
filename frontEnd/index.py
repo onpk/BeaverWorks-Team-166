@@ -1,6 +1,6 @@
 from flask import *;
 
-app = Flask(__name__, template_folder="../frontEnd", static_folder="../frontEnd")
+app = Flask(__name__)
 
 @app.route("/")
 def index():
