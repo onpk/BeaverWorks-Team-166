@@ -1,9 +1,0 @@
-Hello there.
-This is an audio transcription in
-into a file called transcription.txt.
-I will now see if the...
-the contents of my voice have been transcribed into translation.
-transcription.txt
-I will now end the code.
-Why'd you get a keyboard interrupt bro what?
-Ctrl C
