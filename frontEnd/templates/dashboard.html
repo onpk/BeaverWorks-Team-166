@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF=8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+    <div class="main">
+
+        <div class="header">
+
+        <nav>
+
+            <div class="logo">
+                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"></a>
+            </div>
+
+            <div class="menu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('account') }}">Account</a></li>
+                </ul>
+            </div>
+
+        </nav>
+
+        </div>
+
+        <div class="dashboard">
+
+            <div class="row1">
+            <ul>
+                <li>
+                    <a href="{{ url_for('startSession') }}"><img src="{{ url_for('static', filename='images/startSession.png') }}"></a>
+                    <p>Start Session</p>
+                </li>
+                <li>
+                    <a href="{{ url_for('autismResources') }}" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/autismResources.png') }}"></a>
+                    <p>Autism Resources</p>
+                </li>
+                <li>
+                    <a href="{{ url_for('account') }}"><img src="{{ url_for('static', filename='images/account.png') }}"></a>
+                    <p>Account</p>
+                </li>
+            </ul>
+            </div>
+
+            <div class="row2">
+            <ul>
+                <li>
+                    <a href="{{ url_for('settings') }}"><img src="{{ url_for('static', filename='images/settings.png') }}"></a>
+                    <p>Settings</p>
+                </li>
+                <li>
+                    <a href="{{ url_for('statistics') }}"><img src="{{ url_for('static', filename='images/statistics.png') }}"></a>
+                    <p>Statistics</p>
+                </li>
+                <li>
+                    <a href="{{ url_for('history')}}"><img src="{{ url_for('static', filename='images/history.png') }}"></a>
+                    <p>History</p>
+                </li>
+            </ul>
+            </div>
+
+        </div>
+    
+    </div>
+
+    <div class="banner">
+
+    </div>
+
+</body>
+</html>

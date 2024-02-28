@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF=8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OnCall</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+
+</head>
+<body>
+
+    <div class="landingMain">
+
+        <div class="header">
+        <nav>
+
+            <div class="logo">
+                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"></a>
+            </div>
+
+            <div class="menu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('account') }}">Account</a></li>
+                </ul>
+            </div>
+
+        </nav>
+        </div>
+
+        <div class="info">
+
+            <div class="overlay"></div>
+
+            <div id="circle">
+                <div class="feature one">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+                <div class="feature two">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+                <div class="feature three">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+                <div class="feature four">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}">
+                    <div>
+                        <h1>Placeholder</h1>
+                        <p>[Insert Autism Statistic]</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="controls">
+            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="upbtn">
+            <h3> </h3>
+            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="dwnbtn">
+        </div>
+
+        </div>
+    
+    </div>
+
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+
+</body>
+</html>

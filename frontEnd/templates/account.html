@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account</title>
-    <link rel="icon" type="image/x-icon" href="assets/icon.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -15,19 +15,19 @@
         <div class="header">
             <nav>
                 <div class="logo">
-                    <a href="index.html"><img src="assets/logo.png" alt="Logo"></a>
+                    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
                 </div>
                 <div class="menu">
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="dashboard.html">Dashboard</a></li>
-                        <li><a href="account.html">Account</a></li>
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('account') }}">Account</a></li>
                     </ul>
                 </div>
             </nav>
         </div>
 
-        <!--SIDDARTH PLEASE INSERT CODE INTO THE MAIN AREA HERE! THIS IS UNDER THE HEADING, AND ABOVE THE BANNER-->
+        <!--SHRERAJ: SIDDARTH PLEASE INSERT CODE INTO THE MAIN AREA HERE! THIS IS UNDER THE HEADING, AND ABOVE THE BANNER-->
     
     </div>
 
@@ -44,6 +44,7 @@
     <div class="account-info">
         <!-- Include your account information HTML code here -->
         <!-- For example, you can have a table or other elements displaying user information -->
+        <!-- SHRERAJ: EDIT THIS SECTION TO INCLUDE ACCOUNT INTERESTS-->
     </div>
 
     <script>
