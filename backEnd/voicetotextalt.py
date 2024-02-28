@@ -10,7 +10,7 @@ class VTT():
     def speak(self):
         filef=open(self.outfile,"w")
         with sp.Microphone() as source:
-            audio=self.r.listen(source,phrase_time_limit=3)
+            audio=self.r.listen(source,phrase_time_limit=5)
         ls=[]
         try:
             ls.append(self.r.recognize_whisper(audio))
