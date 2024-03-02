@@ -4,7 +4,8 @@ import os
 from re import sub
 from voicetotextalt import VTT
 from random import choice
-key = "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"
+import secretkey
+key = secretkey.keyval
 output_file_path = "conversation.json"
 
 scenarios=["""You're in the cafeteria during lunch break when 
