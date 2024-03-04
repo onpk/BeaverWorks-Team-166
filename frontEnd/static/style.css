@@ -163,8 +163,8 @@ nav{
 
 .controls{
     position: absolute;
-    right: 10%;
-    top: 50%;
+    right: 7%;
+    top: 53.5%;
     transform: translateY(-50%);
     text-align: center;
 }
@@ -210,4 +210,38 @@ nav{
 
 .categories img{
     width: 80px;
+}
+
+form {
+    margin-top: 100px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+input[type="text"] {
+    width: 70%;
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.conatiner ul {
+    list-style-type: none;
+    padding: 0;
+}
+.container li {
+    margin-bottom: 10px;
 }

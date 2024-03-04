@@ -27,58 +27,25 @@
             </nav>
         </div>
 
-        <!--SHRERAJ: SIDDARTH PLEASE INSERT CODE INTO THE MAIN AREA HERE! THIS IS UNDER THE HEADING, AND ABOVE THE BANNER-->
+        <!--Account Container-->
+
+        <form>
+        <div class="container">
+            <h1>Interests</h1>
+            <input type="text" id="interestInput" placeholder="Enter your interests">
+            <button type="submit">Save</button>
+            <ul id="interestList"></ul>
+        </div>
+        </form>
     
     </div>
 
     <div class="banner">
-        <h2>Update Your Interests</h2>
-        <form id="interestForm">
-            <label for="interests">Enter your interests:</label>
-            <input type="text" id="interests" name="interests" required>
-            <button type="button" onclick="saveInterests()">Save Interests</button>
-        </form>
+        
     </div>
 
-    <!-- Account Info Section -->
-    <div class="account-info">
-        <!-- Include your account information HTML code here -->
-        <!-- For example, you can have a table or other elements displaying user information -->
-        <!-- SHRERAJ: EDIT THIS SECTION TO INCLUDE ACCOUNT INTERESTS-->
-    </div>
+    <script src="{{ url_for('static', filename='account.js') }}"></script>
 
-    <script>
-        function saveInterests() {
-            // Get user interests from the form
-            var userInterests = document.getElementById("interests").value;
-
-            // Create an object to store user data
-            var userData = {
-                interests: userInterests
-            };
-
-            // Convert the data to JSON format
-            var jsonData = JSON.stringify(userData);
-
-            // Send the data to the server using Fetch API
-            fetch('saveUserData.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: jsonData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('Interests saved successfully!');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Error saving interests. Please try again.');
-            });
-        }
-    </script>
 </body>
 
 </html>
