@@ -1,6 +1,4 @@
 from flask import *
-from transformers import *;
-import torch;
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
