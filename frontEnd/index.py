@@ -1,4 +1,4 @@
-from flask import *;
+from flask import *
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -37,6 +37,10 @@ def statistics():
 @app.route("/autismResources")
 def autismResources():
     return redirect("https://www.autismspeaks.org/resource-guide")
+
+@app.route("/chat")
+def chat():
+    return render_template("subpages/chat.html")
 
 if __name__ == "__main__":
     app.run()
