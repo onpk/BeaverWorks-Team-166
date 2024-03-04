@@ -127,8 +127,7 @@ class SocialScenarioApp(QMainWindow):
         self.button_layout.addWidget(self.category_label)
 
         self.category_combo = QComboBox()
-        self.category_combo.addItem("School")
-        self.category_combo.addItem("Friends")
+        self.category_combo.addItem(sys.argv[1])
         # Add more categories as needed
         self.button_layout.addWidget(self.category_combo)
 

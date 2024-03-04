@@ -39,9 +39,9 @@ def statistics():
 def autismResources():
     return redirect("https://www.autismspeaks.org/resource-guide")
 
-@app.route("/session")
-def session():
-    subprocess.call(["python", "../backEnd/chat/chilicooked.py"])
+@app.route("/session/<category>")
+def session(category=""):
+    subprocess.Popen(["python", "../BeaverWorks-Team-166/backEnd/chat/chilicooked.py", category], 0)
     return render_template("subpages/startSession.html")
     
 
