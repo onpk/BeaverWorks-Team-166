@@ -9,6 +9,7 @@ class VTT():
         
     def speak(self):
         filef=open(self.outfile,"w")
+        #self.recognizer.adjust_for_ambient_noise(source)
         with sp.Microphone() as source:
             audio=self.r.listen(source,phrase_time_limit=5)
         ls=[]

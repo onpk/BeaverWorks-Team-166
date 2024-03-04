@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget, QLabel, QStackedWidget, QComboBox
 from PyQt5.QtGui import QFont, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-import speech_recognition as sr
+from voicetotextalt import VTT
 import openai
 import threading
 import time
@@ -18,25 +18,14 @@ class SpeechRecognitionThread(QThread):
 
     def __init__(self):
         super().__init__()
-        self.recognizer = sr.Recognizer()
-        self.microphone = sr.Microphone()
+        self.spkobj=VTT("outfile.txt")
         self.is_running = True
 
     def stop_recording(self):
         self.is_running = False
 
     def run(self):
-        with self.microphone as source:
-            self.recognizer.adjust_for_ambient_noise(source)
-            while self.is_running:
-                audio = self.recognizer.listen(source, phrase_time_limit=20)
-                try:
-                    response = self.recognizer.recognize_google(audio)
-                    self.speech_detected.emit(response)
-                except sr.UnknownValueError:
-                    pass
-                except sr.RequestError as e:
-                    print(f"Could not request results from Google Speech Recognition service; {e}")
+        self.spkobj.speak()
 
 class SocialScenarioApp(QMainWindow):
     def __init__(self):
