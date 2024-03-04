@@ -1,4 +1,5 @@
 from flask import *
+import subprocess
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -38,9 +39,11 @@ def statistics():
 def autismResources():
     return redirect("https://www.autismspeaks.org/resource-guide")
 
-@app.route("/chat")
-def chat():
-    return render_template("subpages/chat.html")
+@app.route("/session")
+def session():
+    subprocess.call(["python", "../backEnd/chat/chilicooked.py"])
+    return render_template("subpages/startSession.html")
+    
 
 if __name__ == "__main__":
     app.run()

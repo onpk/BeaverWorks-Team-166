@@ -11,7 +11,7 @@ import os
 import requests
 from re import sub
 from random import choice
-import os
+import json
 
 output_file_path = "conversation.json"
 

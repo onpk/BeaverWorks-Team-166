@@ -1,4 +1,4 @@
-const cats = ["json", "School", "Friends", "Sports", "Sarcasm", "Texting", "Summer", "Theater"];
+const cats = ["Pets", "School", "Friends", "Sports", "Sarcasm", "Texting", "Summer", "Theater"];
 const n = [0, 0, 0, 0, 0, 0, 0, 0];
 const t = [20, 5, 3, 6, 3, 3, 20, 10];
 
