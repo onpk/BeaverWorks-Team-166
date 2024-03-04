@@ -2,9 +2,10 @@ import openai
 import json
 import os
 from re import sub
-from voicetotextalt import VTT
+from vtt import VTT
 from random import choice
-key = "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"
+import secretkey
+key = secretkey.keyval
 output_file_path = "conversation.json"
 
 scenarios=["""You're in the cafeteria during lunch break when 
@@ -89,12 +90,15 @@ while "Bye" not in user[0]['content'].strip() or "bye" not in user[0]['content']
     print("\nYou: ",end="")
     print(user[0]['content'])
     chat.append(user[0])
+    if "Bye" in user[0]['content'].strip() or "bye" in user[0]['content'].strip():
+        break
     print("\nSystem: ")
     
     chat.append({"role": "assistant", "content": reply})
     system = [{"role": "assistant", "content": reply}]
     with open(output_file_path, 'w') as json_file:
         json.dump(chat, json_file, indent=2)
+    
     # Save the updated conversation to the JSON file
 #chats.update(chat)
-
+#print(chat)
