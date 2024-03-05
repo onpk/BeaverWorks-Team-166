@@ -139,7 +139,7 @@ class SpeechRecognitionThread(QThread):
                 except sr.UnknownValueError:
                     pass
                 except sr.RequestError as e:
-                    print(f"Could not request results from Google Speech Recognition service; {e}")
+                    print("Could not request results from Google Speech Recognition service; {}".format(e))
 
 class SocialScenarioApp(QMainWindow):
     def __init__(self):
