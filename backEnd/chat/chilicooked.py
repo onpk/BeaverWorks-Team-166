@@ -1,32 +1,31 @@
 import sys
+import json
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget, QLabel, QStackedWidget, QComboBox
 from PyQt5.QtGui import QFont, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 import speech_recognition as sr
 import openai
-import threading
 import time
 from gtts import gTTS
 import os
-import requests
 from re import sub
 from random import choice
-import os
-import json
-import secretkey
-output_file_path = "conversation.json"
 
 # Set up OpenAI API key
-openai.api_key = secretkey.keyval
+openai.api_key = "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"
 
-# Define scenarios
+# Define the scenarios list
 scenarios = [
-    """You're in the cafeteria during lunch break when 
-    a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics 
-    experiment""",
-    """ You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
-    she's been experimenting with watercolor techniques lately and would love to share her progress.""",
-    # Add more scenarios as needed
+    """You're in the cafeteria during lunch break when a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics experiment""",
+    """You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions she's been experimenting with watercolor techniques lately and would love to share her progress.""",
+    """You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.""",
+    """You're waiting for the bus after school when Maya, a student you recognize from the drama club, approaches. She asks if she can sit next to you and mentions she's excited about the upcoming school play auditions and wonders if you plan to try out too.""",
+    """You're in the game room during free period when Michael, a fellow gamer, walks over. He asks if he can join your game and mentions he's been practicing a new strategy in his favorite game and is eager to test it out.""",
+    """You're at the outdoor hangout spot after school when Sarah, a classmate you've seen around, comes over. She asks if she can sit at your table and mentions she's been feeling stressed lately and could use a friendly chat to unwind.""",
+    """You're in the gym during your workout session when Daniel, a classmate who's into fitness, approaches. He asks if he can share the equipment with you and mentions he's been following a new exercise routine and wants to know if you have any tips.""",
+    """You're in the music room practicing piano when Lily, a fellow musician, walks in. She asks if she can use the piano next to you and mentions she's been working on a new song and would love your feedback.""",
+    """You're in the library reading zone when Ethan, a classmate you've seen around, approaches. He asks if he can join you and mentions he's been struggling to find a good book to read and wonders if you have any recommendations.""",
+    """You're at the art studio working on your project when Sophia, a classmate known for her creativity, comes over. She asks if she can work alongside you and mentions she's been experimenting with a new painting technique and would love to share it with you."""
 ]
 
 # Initialize user with a default value
@@ -37,12 +36,14 @@ intromessage = """You are an AI friend who is interacting with autistic children
             Your goal is to engage them in a friendly and supportive conversation, incorporating role-playing scenarios to encourage social interaction. 
            Create a positive and inclusive environment, adapt to their preferences, and guide them through imaginative scenarios that foster communication and social skills. 
            Remember to be patient, understanding, and encouraging throughout the interaction."""
-#user = [{"role": "user", "content": user_input}]
-intromessage += """Your role-playing scenario is this: """ + choice(scenarios) + ". Please make your responses and messages based around this scenario."
+
+# Add the role-playing scenario to the introduction message
+intromessage += f"Your role-playing scenario is this: {choice(scenarios)}. Please make your responses and messages based around this scenario."
+
+output_file_path = "conversation.json"
 
 # Load existing conversation from JSON file
 if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
-    # print("aye")
     with open(output_file_path, 'r') as json_file:
         chat = json.load(json_file)
     for c in range(2, len(chat)):
@@ -64,16 +65,12 @@ if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
             else:
                 assistant += cont
 
-    intromessage += "These are previous messages you sent. Remember them as you write your responses. " + assistant + " These are the messages that the user sent. Remember these as well when you write your responses. " + user
+    intromessage += f"These are previous messages you sent. Remember them as you write your responses. {assistant} These are the messages that the user sent. Remember these as well when you write your responses. {user}"
     system = [{"role": "system", "content": intromessage}]
-    user = [{"role": "user", "content": "Reintroduce yourself as " + name + ". Start a conversation with the user."}]
+    user = [{"role": "user", "content": f"Reintroduce yourself as {name}. Start a conversation with the user."}]
     chat = []
-
 else:
-    # If the JSON file is empty or doesn't exist, initialize the conversation with general questions
-    # print("nay")
     system = [{"role": "assistant", "content": intromessage.strip()}]
-
     user = [{"role": "user", "content": "Introduce yourself with a name. Ask the user their age and tailor your responses appropriately."}]
     chat = []
 
@@ -115,12 +112,10 @@ class SocialScenarioApp(QMainWindow):
         self.layout = QVBoxLayout()
         self.central_widget.setLayout(self.layout)
 
-        # Add title label
         self.title_label = QLabel("Social Scenario Practice")
         self.title_label.setFont(QFont('Arial', 20))
         self.layout.addWidget(self.title_label, alignment=Qt.AlignCenter)
 
-        # Add buttons
         self.button_layout = QVBoxLayout()
         self.layout.addLayout(self.button_layout)
 
@@ -130,7 +125,6 @@ class SocialScenarioApp(QMainWindow):
         self.category_combo = QComboBox()
         self.category_combo.addItem("School")
         self.category_combo.addItem("Friends")
-        # Add more categories as needed
         self.button_layout.addWidget(self.category_combo)
 
         self.start_session_button = QPushButton("Start Session")
@@ -141,49 +135,38 @@ class SocialScenarioApp(QMainWindow):
         self.quit_button.clicked.connect(self.close)
         self.button_layout.addWidget(self.quit_button)
 
-        # Stacked widget for multiple pages
         self.stacked_widget = QStackedWidget()
         self.layout.addWidget(self.stacked_widget)
 
-        # Add main page
         self.main_page_widget = QWidget()
         self.stacked_widget.addWidget(self.main_page_widget)
 
-        # Add recording page
         self.recording_page_widget = QWidget()
         self.recording_page_layout = QVBoxLayout()
         self.recording_page_widget.setLayout(self.recording_page_layout)
         self.stacked_widget.addWidget(self.recording_page_widget)
 
-        # Initialize speech recognition thread
         self.speech_thread = SpeechRecognitionThread()
         self.speech_thread.speech_detected.connect(self.process_input)
 
-        # Initialize variables
         self.is_recording = False
         self.recorded_audio = ""
         self.last_audio_time = time.time()
 
-        # Text edit for displaying conversation
         self.text_edit = QTextEdit()
         self.recording_page_layout.addWidget(self.text_edit)
 
     def start_session(self):
-        # Switch to recording page
         self.stacked_widget.setCurrentWidget(self.recording_page_widget)
-        self.text_edit.clear()  # Clear text_edit
+        self.text_edit.clear()
         self.recorded_audio = ""
         self.is_recording = True
         self.speech_thread.start()
 
-        # Get selected category
         selected_category = self.category_combo.currentText()
-
-        # Provide social scenario based on the selected category
         scenario = self.get_social_scenario(selected_category)
         self.text_edit.append(f"<font color='blue'><b>AI:</b></font> {scenario}")
 
-        # Speak the scenario
         tts = gTTS(text=scenario, lang='en')
         tts.save("scenario.mp3")
         os.system("mpg123 scenario.mp3")
@@ -199,45 +182,34 @@ class SocialScenarioApp(QMainWindow):
             self.get_ai_response()
 
     def get_ai_response(self):
-        # Call OpenAI API with recorded audio
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=self.recorded_audio,
-            temperature=0.7,
-            max_tokens=50
-        )
+        response = vclient.chat.completions.create(
+            messages=system + chat[-10:] + user,
+            model="gpt-3.5-turbo", stream=True)
 
-        # Speak AI response
-        ai_response = response.choices[0].text.strip()
+        ai_response = ""
+        for delta in response:
+            if not delta.choices[0].finish_reason:
+                word = delta.choices[0].delta.content
+                ai_response += word
+
         self.text_edit.append(f"<font color='green'><b>AI:</b></font> {ai_response}")
         tts = gTTS(text=ai_response, lang='en')
         tts.save("ai_response.mp3")
         os.system("mpg123 ai_response.mp3")
 
-        # Reset variables
         self.recorded_audio = ""
         self.last_audio_time = time.time()
 
     def get_social_scenario(self, category):
-        try:
-            # Define the prompt based on the selected category
-            prompt = f"Generate a social scenario for {category}."
-
-            # Call OpenAI API to generate the scenario
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=prompt,
-                temperature=0.7,
-                max_tokens=200
-            )
-
-            # Extract the scenario from the response
-            scenario = response.choices[0].text.strip()
-            return scenario
-
-        except Exception as e:
-            print(f"Failed to fetch scenario from API: {e}")
-            return "This is a sample social scenario for the selected category."
+        scenario = choice(scenarios)
+        # Split the scenario into lines
+        lines = scenario.split("\n")
+        # Extract the name of the character from the scenario
+        name = lines[0].split(",")[1].split(" ")[1]  # Assuming the name appears after the comma
+        # Replace "You" with the name of the character
+        scenario = scenario.replace("You", name)
+        # Return the modified scenario
+        return scenario
 
     def closeEvent(self, event):
         if self.speech_thread.isRunning():
@@ -248,7 +220,6 @@ class SocialScenarioApp(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # Set application palette
     palette = app.palette()
     palette.setColor(QPalette.Window, QColor(240, 240, 240))
     palette.setColor(QPalette.WindowText, QColor(40, 40, 40))
