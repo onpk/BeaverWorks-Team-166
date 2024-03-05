@@ -8,12 +8,31 @@ import openai
 import time
 from gtts import gTTS
 import os
+<<<<<<< HEAD
+import requests
 from re import sub
 from random import choice
+import json
+
+output_file_path = "conversation.json"
+=======
+from re import sub
+from random import choice
+>>>>>>> 474f9b49373c17c0013d4226e010a887dfc5f9df
 
 # Set up OpenAI API key
 openai.api_key = "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"
 
+<<<<<<< HEAD
+# Define scenarios
+scenarios = [
+    """You're in the cafeteria during lunch break when 
+    a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics 
+    experiment""",
+    """ You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
+    she's been experimenting with watercolor techniques lately and would love to share her progress.""",
+    # Add more scenarios as needed
+=======
 # Define the scenarios list
 scenarios = [
     """You're in the cafeteria during lunch break when a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics experiment""",
@@ -26,6 +45,7 @@ scenarios = [
     """You're in the music room practicing piano when Lily, a fellow musician, walks in. She asks if she can use the piano next to you and mentions she's been working on a new song and would love your feedback.""",
     """You're in the library reading zone when Ethan, a classmate you've seen around, approaches. He asks if he can join you and mentions he's been struggling to find a good book to read and wonders if you have any recommendations.""",
     """You're at the art studio working on your project when Sophia, a classmate known for her creativity, comes over. She asks if she can work alongside you and mentions she's been experimenting with a new painting technique and would love to share it with you."""
+>>>>>>> 474f9b49373c17c0013d4226e010a887dfc5f9df
 ]
 
 # Initialize user with a default value
@@ -36,6 +56,14 @@ intromessage = """You are an AI friend who is interacting with autistic children
             Your goal is to engage them in a friendly and supportive conversation, incorporating role-playing scenarios to encourage social interaction. 
            Create a positive and inclusive environment, adapt to their preferences, and guide them through imaginative scenarios that foster communication and social skills. 
            Remember to be patient, understanding, and encouraging throughout the interaction."""
+<<<<<<< HEAD
+#user = [{"role": "user", "content": user_input}]
+intromessage += """Your role-playing scenario is this: """ + choice(scenarios) + ". Please make your responses and messages based around this scenario."
+
+# Load existing conversation from JSON file
+if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
+    # print("aye")
+=======
 
 # Add the role-playing scenario to the introduction message
 intromessage += f"Your role-playing scenario is this: {choice(scenarios)}. Please make your responses and messages based around this scenario."
@@ -44,6 +72,7 @@ output_file_path = "conversation.json"
 
 # Load existing conversation from JSON file
 if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
+>>>>>>> 474f9b49373c17c0013d4226e010a887dfc5f9df
     with open(output_file_path, 'r') as json_file:
         chat = json.load(json_file)
     for c in range(2, len(chat)):
@@ -65,12 +94,25 @@ if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
             else:
                 assistant += cont
 
+<<<<<<< HEAD
+    intromessage += "These are previous messages you sent. Remember them as you write your responses. " + assistant + " These are the messages that the user sent. Remember these as well when you write your responses. " + user
+    system = [{"role": "system", "content": intromessage}]
+    user = [{"role": "user", "content": "Reintroduce yourself as " + name + ". Start a conversation with the user."}]
+    chat = []
+
+else:
+    # If the JSON file is empty or doesn't exist, initialize the conversation with general questions
+    # print("nay")
+    system = [{"role": "assistant", "content": intromessage.strip()}]
+
+=======
     intromessage += f"These are previous messages you sent. Remember them as you write your responses. {assistant} These are the messages that the user sent. Remember these as well when you write your responses. {user}"
     system = [{"role": "system", "content": intromessage}]
     user = [{"role": "user", "content": f"Reintroduce yourself as {name}. Start a conversation with the user."}]
     chat = []
 else:
     system = [{"role": "assistant", "content": intromessage.strip()}]
+>>>>>>> 474f9b49373c17c0013d4226e010a887dfc5f9df
     user = [{"role": "user", "content": "Introduce yourself with a name. Ask the user their age and tailor your responses appropriately."}]
     chat = []
 
@@ -97,7 +139,7 @@ class SpeechRecognitionThread(QThread):
                 except sr.UnknownValueError:
                     pass
                 except sr.RequestError as e:
-                    print(f"Could not request results from Google Speech Recognition service; {e}")
+                    print("Could not request results from Google Speech Recognition service; {}".format(e))
 
 class SocialScenarioApp(QMainWindow):
     def __init__(self):
@@ -123,8 +165,13 @@ class SocialScenarioApp(QMainWindow):
         self.button_layout.addWidget(self.category_label)
 
         self.category_combo = QComboBox()
+<<<<<<< HEAD
+        self.category_combo.addItem(sys.argv[1])
+        # Add more categories as needed
+=======
         self.category_combo.addItem("School")
         self.category_combo.addItem("Friends")
+>>>>>>> 474f9b49373c17c0013d4226e010a887dfc5f9df
         self.button_layout.addWidget(self.category_combo)
 
         self.start_session_button = QPushButton("Start Session")
@@ -201,6 +248,27 @@ class SocialScenarioApp(QMainWindow):
         self.last_audio_time = time.time()
 
     def get_social_scenario(self, category):
+<<<<<<< HEAD
+        try:
+            # Define the prompt based on the selected category
+            prompt = f"Generate a social scenario for {category}."
+
+            # Call OpenAI API to generate the scenario
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                temperature=0.7,
+                max_tokens=200
+            )
+
+            # Extract the scenario from the response
+            scenario = response.choices[0].text.strip()
+            return scenario
+
+        except Exception as e:
+            print(f"Failed to fetch scenario from API: {e}")
+            return "This is a sample social scenario for the selected category."
+=======
         scenario = choice(scenarios)
         # Split the scenario into lines
         lines = scenario.split("\n")
@@ -210,6 +278,7 @@ class SocialScenarioApp(QMainWindow):
         scenario = scenario.replace("You", name)
         # Return the modified scenario
         return scenario
+>>>>>>> 474f9b49373c17c0013d4226e010a887dfc5f9df
 
     def closeEvent(self, event):
         if self.speech_thread.isRunning():

@@ -1,87 +1,73 @@
+can you make the text show up on the right part of the page because right now the text is being covered up by a shape:
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF=8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>OnCall</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-
 </head>
+
 <body>
-
     <div class="landingMain">
-
         <div class="header">
-        <nav>
+            <nav>
+                <div class="logo">
+                    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="OnCall Logo"></a>
+                </div>
 
-            <div class="logo">
-                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"></a>
-            </div>
-
-            <div class="menu">
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('account') }}">Account</a></li>
-                </ul>
-            </div>
-
-        </nav>
+                <div class="menu">
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('account') }}">Account</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
 
         <div class="info">
-
             <div class="overlay"></div>
 
             <div id="circle">
                 <div class="feature one">
-                    <img src="{{ url_for('static', filename='images/icon.png') }}">
+                    <img src="{{ url_for('static', filename='images/icon.png') }}" alt="Feature Icon">
                     <div>
-                        <h1>Placeholder</h1>
-                        <p>[Insert Autism Statistic]</p>
+                        <h1>Autism Prevalence</h1>
+                        <p>Source: Centers for Disease Control and Prevention (2023)</p>
+                        <ul>
+                            <li>1 in 36 children in the U.S. have autism, up from the previous rate of 1 in 44.</li>
+                            <li>1 in 45 adults in the U.S. have autism.</li>
+                            <li>In the U.S., about 4 in 100 boys and 1 in 100 girls have autism.</li>
+                            <li>Boys are nearly 4 times more likely to be diagnosed with autism than girls.</li>
+                            <li>Autism prevalence is lower among white children than other racial and ethnic groups:</li>
+                            <ul>
+                                <li>White – 2.4%</li>
+                                <li>Black – 2.9%</li>
+                                <li>Hispanic – 3.2%</li>
+                                <li>Asian or Pacific Islander – 3.3%</li>
+                            </ul>
+                            <li>These changes reflect an improvement in outreach, screening, and de-stigmatization of autism diagnosis among minority communities.</li>
+                            <li>*The CDC autism prevalence estimates are for 8-year-old children across 11 monitoring sites in the Autism and Developmental Disabilities Monitoring (ADDM) Network in 2020.</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="feature two">
-                    <img src="{{ url_for('static', filename='images/icon.png') }}">
-                    <div>
-                        <h1>Placeholder</h1>
-                        <p>[Insert Autism Statistic]</p>
-                    </div>
-                </div>
-                <div class="feature three">
-                    <img src="{{ url_for('static', filename='images/icon.png') }}">
-                    <div>
-                        <h1>Placeholder</h1>
-                        <p>[Insert Autism Statistic]</p>
-                    </div>
-                </div>
-                <div class="feature four">
-                    <img src="{{ url_for('static', filename='images/icon.png') }}">
-                    <div>
-                        <h1>Placeholder</h1>
-                        <p>[Insert Autism Statistic]</p>
-                    </div>
-                </div>
+                <!-- Repeat the above structure for other features -->
             </div>
-
         </div>
 
         <div class="controls">
-            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="upbtn">
+            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="upbtn" alt="Up Button">
             <h3> </h3>
-            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="dwnbtn">
+            <img src="{{ url_for('static', filename='images/arrow.png') }}" id="dwnbtn" alt="Down Button">
         </div>
-
-        </div>
-    
     </div>
 
     <script src="{{ url_for('static', filename='index.js') }}"></script>
-
 </body>
+
 </html>

@@ -1,0 +1,40 @@
+/* Add this CSS to your style.css file */
+.feature {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 20%; /* Adjust this value as needed */
+    margin-top: 50px; /* Adjust this value as needed */
+}
+
+.feature img {
+    margin-right: 20px; /* Adjust this value as needed */
+}
+
+.feature div {
+    max-width: 50%; /* Adjust this value as needed */
+}
+
+.feature h1 {
+    font-size: 24px; /* Adjust this value as needed */
+    margin-bottom: 10px;
+}
+
+.feature p {
+    font-size: 18px; /* Adjust this value as needed */
+    margin-bottom: 10px;
+}
+
+.feature ul {
+    list-style-type: none;
+}
+
+.feature ul li {
+    font-size: 16px; /* Adjust this value as needed */
+    margin-bottom: 5px;
+}
+
+.feature ul ul {
+    margin-top: 5px;
+    margin-left: 20px; /* Adjust this value as needed */
+}
