@@ -2,30 +2,105 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget, QLabel, QStackedWidget, QComboBox
 from PyQt5.QtGui import QFont, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from vtt import VTT
+import speech_recognition as sr
 import openai
 import threading
 import time
 from gtts import gTTS
 import os
 import requests
+from re import sub
+from random import choice
+import os
+import json
 import secretkey
+output_file_path = "conversation.json"
+
 # Set up OpenAI API key
 openai.api_key = secretkey.keyval
+
+# Define scenarios
+scenarios = [
+    """You're in the cafeteria during lunch break when 
+    a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics 
+    experiment""",
+    """ You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
+    she's been experimenting with watercolor techniques lately and would love to share her progress.""",
+    # Add more scenarios as needed
+]
+
+# Initialize user with a default value
+user = ""
+assistant = ""
+name = ""
+intromessage = """You are an AI friend who is interacting with autistic children.
+            Your goal is to engage them in a friendly and supportive conversation, incorporating role-playing scenarios to encourage social interaction. 
+           Create a positive and inclusive environment, adapt to their preferences, and guide them through imaginative scenarios that foster communication and social skills. 
+           Remember to be patient, understanding, and encouraging throughout the interaction."""
+#user = [{"role": "user", "content": user_input}]
+intromessage += """Your role-playing scenario is this: """ + choice(scenarios) + ". Please make your responses and messages based around this scenario."
+
+# Load existing conversation from JSON file
+if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
+    # print("aye")
+    with open(output_file_path, 'r') as json_file:
+        chat = json.load(json_file)
+    for c in range(2, len(chat)):
+        if chat[c]["role"] == "user":
+            if "python -u" in chat[c]["content"]:
+                pass
+            else:
+                user += chat[c]["content"]
+        elif chat[c]["role"] == "assistant":
+            assistant += chat[c]["content"]
+        else:
+            cont = chat[c]["content"]
+            temp = cont.split()
+            for i in temp:
+                if i == "I'm":
+                    name = sub(r'\W+', '', temp[temp.index(i) + 1])
+            if ("apologize" or "sorry") in cont:
+                pass
+            else:
+                assistant += cont
+
+    intromessage += "These are previous messages you sent. Remember them as you write your responses. " + assistant + " These are the messages that the user sent. Remember these as well when you write your responses. " + user
+    system = [{"role": "system", "content": intromessage}]
+    user = [{"role": "user", "content": "Reintroduce yourself as " + name + ". Start a conversation with the user."}]
+    chat = []
+
+else:
+    # If the JSON file is empty or doesn't exist, initialize the conversation with general questions
+    # print("nay")
+    system = [{"role": "assistant", "content": intromessage.strip()}]
+
+    user = [{"role": "user", "content": "Introduce yourself with a name. Ask the user their age and tailor your responses appropriately."}]
+    chat = []
 
 class SpeechRecognitionThread(QThread):
     speech_detected = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
-        self.spkobj=VTT("outfile.txt")
+        self.recognizer = sr.Recognizer()
+        self.microphone = sr.Microphone()
         self.is_running = True
 
     def stop_recording(self):
         self.is_running = False
 
     def run(self):
-        self.spkobj.speak()
+        with self.microphone as source:
+            self.recognizer.adjust_for_ambient_noise(source)
+            while self.is_running:
+                audio = self.recognizer.listen(source, phrase_time_limit=20)
+                try:
+                    response = self.recognizer.recognize_google(audio)
+                    self.speech_detected.emit(response)
+                except sr.UnknownValueError:
+                    pass
+                except sr.RequestError as e:
+                    print(f"Could not request results from Google Speech Recognition service; {e}")
 
 class SocialScenarioApp(QMainWindow):
     def __init__(self):
@@ -153,8 +228,7 @@ class SocialScenarioApp(QMainWindow):
                 engine="text-davinci-002",
                 prompt=prompt,
                 temperature=0.7,
-                max_tokens=200,
-                api_key=secretkey.keyval
+                max_tokens=200
             )
 
             # Extract the scenario from the response
