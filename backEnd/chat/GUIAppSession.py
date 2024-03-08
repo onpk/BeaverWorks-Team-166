@@ -5,14 +5,12 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, Q
 from PyQt5.QtGui import QFont, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 import speech_recognition as sr
-import openai
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+import torch
 import time
 from gtts import gTTS
 import os
 from random import choice
-
-# Set up OpenAI API key
-openai.api_key = "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"
 
 # Define the scenarios list
 scenarios = [
@@ -102,6 +100,10 @@ class SocialScenarioApp(QMainWindow):
 
         self.current_scenario = None
 
+        # Initialize GPT-2 model and tokenizer
+        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        self.model = GPT2LMHeadModel.from_pretrained("gpt2")
+
     def start_session(self):
         self.stacked_widget.setCurrentWidget(self.recording_page_widget)
         self.text_edit.clear()
@@ -112,8 +114,8 @@ class SocialScenarioApp(QMainWindow):
         selected_scenario = choice(scenarios)
         self.text_edit.append(f"<font color='blue'><b>Scenario:</b></font> {selected_scenario}")
 
-        # Extracting a dialogue from the scenario dynamically using OpenAI
-        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scnerio as I need oppurutnity for me to speak as well. Give me a dialogue for a character that is not 'You' in the scenario" + selected_scenario)
+        # Extracting a dialogue from the scenario
+        dialogue = "One friend suggests that they should all work together on the project to make it easier and more fun."
         self.text_edit.append(f"<font color='green'><b>AI:</b></font> {dialogue}")
 
         tts = gTTS(text=dialogue, lang='en')
@@ -130,31 +132,18 @@ class SocialScenarioApp(QMainWindow):
             self.last_audio_time = time.time()
             self.get_ai_response()  # Trigger AI response immediately after user response
 
-    def chat_with_openai(self, prompt):
-        """
-        Sends the prompt to OpenAI API using the chat interface and gets the model's response.
-        """
-        message = {
-            'role': 'user',
-            'content': prompt
-        }
-
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[message]
-        )
-
-        # Extract the chatbot's message from the response.
-        # Assuming there's at least one response and taking the last one as the chatbot's reply.
-        chatbot_response = response.choices[0].message['content']
-        return chatbot_response.strip()
+    def generate_response(self, input_text):
+        input_ids = self.tokenizer.encode(input_text, return_tensors="pt")
+        output = self.model.generate(input_ids, max_length=1000, num_return_sequences=1)
+        generated_text = self.tokenizer.decode(output[0], skip_special_tokens=True)
+        return generated_text
 
     def get_ai_response(self):
         # Get the user's input prompt from the text edit widget
         user_input = self.text_edit.toPlainText()
 
-        # Call the chat_with_openai function to interact with OpenAI API
-        ai_response = self.chat_with_openai(user_input)
+        # Generate AI response
+        ai_response = self.generate_response(user_input)
 
         # Save AI response as an audio file
         tts = gTTS(text=ai_response, lang='en')
