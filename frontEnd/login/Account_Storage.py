@@ -37,3 +37,4 @@ class UserAccount:
 # example usage
 url = 'https://example.com/user_profile'
 user_account = UserAccount.from_html(url)
+
