@@ -1,16 +1,14 @@
-<<<<<<< HEAD
 from flask import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session,sessionmaker
 from passlib.hash import sha256_crypt
-=======
-from flask import Flask, render_template, url_for, redirect
->>>>>>> b65cbf67e03e77a9ec2010c1965df2725158dd8a
 import subprocess
 engine = create_engine("mysql+pymysql://root:Be@verW0rks@localhost/register")
                         #mysql+pymysql//username:password@localhost/databasename)
 db = scoped_session(sessionmaker(bind=engine))
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+#SQL PASSWORD: Be@verW0rks
 
 @app.route("/")
 def home():
@@ -49,12 +47,12 @@ def register():
         confirm = request.form.get("confirm")
         secure_password = sha256_crypt.encrypt(str(password))
         if password == confirm:
-            db.execute("INSERT INTO users(name, username, password) VALUES(:name,username,password)",
+            db.execute("INSERT INTO users(name, username, password) VALUES(:name:username:password)",
                        {"name":name,"username":username,"password":secure_password})
             db.commit()
-            return redirect(url_for('login'))
+            return redirect({{ url_for('account')}})
         else:
-            return render_template("register.html")
+            return render_template("login/register.html")
 
     return render_template("register.html")
 
@@ -68,15 +66,16 @@ def login():
         passworddata = db.execute("SELECT password FROM users WHERE username=:username",{"username":username}).fetchone()
 
         if usernamedata is None:
-            return render_template("frontEnd/login/login.html")
+            return render_template("account.html")
         else:
             for password_data in passworddata:
                 if sha256_crypt.verify(password,password_data):
                     return render_template("dashboard.html")
                 else:
-                    return render_template("frontEnd/login/login.html")
+                    return render_template("account.html")
         #query the database to find login information
-    return render_template("frontEnd/login/login.html")
+    return render_template("account.html")
+
 @app.route("/statistics")
 def statistics():
     return render_template("subpages/statistics.html")
@@ -89,6 +88,10 @@ def autismResources():
 def session(category=""):
     subprocess.Popen(["python", "../BeaverWorks-Team-166/backEnd/chat/GUIAppSession.py", category], 0)
     return render_template("subpages/startSession.html")
+
+@app.route("/registrationPage")
+def registrationPage():
+    return render_template("login/register.html")
     
 
 if __name__ == "__main__":
