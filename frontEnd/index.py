@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 from flask import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session,sessionmaker
 from passlib.hash import sha256_crypt
+=======
+from flask import Flask, render_template, url_for, redirect
+>>>>>>> b65cbf67e03e77a9ec2010c1965df2725158dd8a
 import subprocess
 engine = create_engine("mysql+pymysql://root:Be@verW0rks@localhost/register")
                         #mysql+pymysql//username:password@localhost/databasename)
@@ -83,7 +87,7 @@ def autismResources():
 
 @app.route("/session/<category>")
 def session(category=""):
-    subprocess.Popen(["python", "../BeaverWorks-Team-166/backEnd/chat/chilicooked.py", category], 0)
+    subprocess.Popen(["python", "../BeaverWorks-Team-166/backEnd/chat/GUIAppSession.py", category], 0)
     return render_template("subpages/startSession.html")
     
 

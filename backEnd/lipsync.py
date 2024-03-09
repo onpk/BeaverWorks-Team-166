@@ -5,8 +5,10 @@ import SadTalker
 # from src.utils.text2speech import TTSTalker
 from huggingface_hub import snapshot_download
 
+
 def get_source_image(image):   
         return image
+
 
 try:
     import webui  # in webui
@@ -16,7 +18,7 @@ except:
 
 
 def toggle_audio_file(choice):
-    if choice == False:
+    if not choice:
         return gr.update(visible=True), gr.update(visible=False)
     else:
         return gr.update(visible=False), gr.update(visible=True)
