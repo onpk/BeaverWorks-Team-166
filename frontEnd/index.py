@@ -46,14 +46,15 @@ def register():
         password = request.form.get("password")
         confirm = request.form.get("confirm")
         secure_password = sha256_crypt.encrypt(str(password))
+         
         if password == confirm:
-            db.execute("INSERT INTO users(name, username, password) VALUES(:name:username:password)",
+            db.execute("INSERT INTO users(name, username, password) VALUES(:name,:username,:password)",
                        {"name":name,"username":username,"password":secure_password})
             db.commit()
-            return redirect({{ url_for('account')}})
+            return redirect( url_for('account'))
         else:
             return render_template("login/register.html")
-
+ 
     return render_template("register.html")
 
 @app.route("/login",methods=["GET","POST"])

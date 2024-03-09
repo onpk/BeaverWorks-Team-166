@@ -6,7 +6,7 @@
     <body>
         <div class="container">
             <h1>Register</h1>
-            <form action="" method="POST">
+            <form action="{{ url_for('register')}}" method="POST">
                 <div class="form-group">
                     <input type = "text" name = "name" class = "form-control" placeholder="name" required>
                 </div>
