@@ -12,22 +12,22 @@
 </head>
 
 <body>
-    <div class="landingMain">
-        <div class="header">
-            <nav>
-                <div class="logo">
-                    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="OnCall Logo"></a>
-                </div>
+    <div class="header">
+        <nav>
+            <div class="logo">
+                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="OnCall Logo"></a>
+            </div>
 
-                <div class="menu">
-                    <ul>
-                        <li><a href="{{ url_for('index') }}">Home</a></li>
-                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                        <li><a href="{{ url_for('account') }}">Account</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+            <div class="menu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('account') }}">Account</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="landingMain">
 
         <div class="main">
             <section id="about">
