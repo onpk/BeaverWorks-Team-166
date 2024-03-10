@@ -1,21 +1,79 @@
-import sys
 import json
+import sys
+import os
+import time
+from random import choice
+from re import sub
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget, QLabel, \
     QStackedWidget, QComboBox
 from PyQt5.QtGui import QFont, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 import speech_recognition as sr
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
-import torch
-import time
+import openai
 from gtts import gTTS
-import os
-from random import choice
 
-# Define the scenarios list
+output_file_path = "conversation.json"
+
+# Set up OpenAI API key
+openai.api_key = "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"
+
+# Initialize user with a default value
+user = ""
+assistant = ""
+name = ""
+
+# Define scenarios
 scenarios = [
-    """During lunchtime at school, a group of friends are sitting together at a table in the cafeteria. They are discussing their plans for an upcoming school project and trying to figure out who will be responsible for which tasks. One friend suggests that they should all work together on the project to make it easier and more fun. Another friend disagrees and thinks they should divide the tasks evenly to ensure a fair distribution of workload. As the debate continues, other students at nearby tables start to take notice and offer their opinions on the best approach. The group of friends ultimately come to a compromise and decide to divide the tasks fairly while also working collaboratively on the project. This scenario highlights the importance of communication and teamwork in a school setting."""
+    "During lunchtime at school, a group of friends are sitting together at a table in the cafeteria. They are "
+    "discussing their plans for an upcoming school project and trying to figure out who will be responsible for which "
+    "tasks. One friend suggests that they should all work together on the project to make it easier and more fun. "
+    "Another friend disagrees and thinks they should divide the tasks evenly to ensure a fair distribution of "
+    "workload. As the debate continues, other students at nearby tables start to take notice and offer their opinions "
+    "on the best approach. The group of friends ultimately come to a compromise and decide to divide the tasks fairly "
+    "while also working collaboratively on the project."
 ]
+
+intromessage = "You are an AI friend who is interacting with autistic children. Your goal is to engage them in a " \
+               "friendly and supportive conversation, incorporating role-playing scenarios to encourage social " \
+               "interaction. Create a positive and inclusive environment, adapt to their preferences, and guide them " \
+               "through imaginative scenarios that foster communication and social skills. Remember to be patient, " \
+               "understanding, and encouraging throughout the interaction."
+
+# Load existing conversation from JSON file
+if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
+    with open(output_file_path, 'r') as json_file:
+        chat = json.load(json_file)
+    for c in range(2, len(chat)):
+        if chat[c]["role"] == "user":
+            if "python -u" in chat[c]["content"]:
+                pass
+            else:
+                user += chat[c]["content"]
+        elif chat[c]["role"] == "assistant":
+            assistant += chat[c]["content"]
+        else:
+            cont = chat[c]["content"]
+            temp = cont.split()
+            for i in temp:
+                if i == "I'm":
+                    name = sub(r'\W+', '', temp[temp.index(i) + 1])
+            if ("apologize" or "sorry") in cont:
+                pass
+            else:
+                assistant += cont
+
+    intromessage += "These are previous messages you sent. Remember them as you write your responses. " + assistant + " These are the messages that the user sent. Remember these as well when you write your responses. " + user
+    system = [{"role": "system", "content": intromessage}]
+    user = [{"role": "user", "content": "Reintroduce yourself as " + name + ". Start a conversation with the user."}]
+    chat = []
+
+else:
+    system = [{"role": "assistant", "content": intromessage.strip()}]
+
+    user = [{"role": "user",
+             "content": "Introduce yourself with a name. Ask the user their age and tailor your responses "
+                        "appropriately."}]
+    chat = []
 
 
 class SpeechRecognitionThread(QThread):
@@ -25,9 +83,6 @@ class SpeechRecognitionThread(QThread):
         super().__init__()
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
-
-        # Adjust the recognizer sensitivity
-        self.recognizer.energy_threshold = 1000  # You may need to adjust this value based on your environment
         self.is_running = True
 
     def stop_recording(self):
@@ -36,18 +91,15 @@ class SpeechRecognitionThread(QThread):
     def run(self):
         with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source)
-
-            # Adjust phrase time limit for real-time processing
             while self.is_running:
-                audio = self.recognizer.listen(source, phrase_time_limit=3)  # Adjust as needed
+                audio = self.recognizer.listen(source, phrase_time_limit=20)
                 try:
                     response = self.recognizer.recognize_google(audio)
                     self.speech_detected.emit(response)
                 except sr.UnknownValueError:
                     pass
                 except sr.RequestError as e:
-                    print(f"Could not request results from Google Speech Recognition service; {e}")
-
+                    print("Could not request results from Google Speech Recognition service; {}".format(e))
 
 class SocialScenarioApp(QMainWindow):
     def __init__(self):
@@ -68,6 +120,13 @@ class SocialScenarioApp(QMainWindow):
 
         self.button_layout = QVBoxLayout()
         self.layout.addLayout(self.button_layout)
+
+        self.category_label = QLabel("Select Category:")
+        self.button_layout.addWidget(self.category_label)
+
+        self.category_combo = QComboBox()
+        self.category_combo.addItem(sys.argv[1])
+        self.button_layout.addWidget(self.category_combo)
 
         self.start_session_button = QPushButton("Start Session")
         self.start_session_button.clicked.connect(self.start_session)
@@ -98,12 +157,6 @@ class SocialScenarioApp(QMainWindow):
         self.text_edit = QTextEdit()
         self.recording_page_layout.addWidget(self.text_edit)
 
-        self.current_scenario = None
-
-        # Initialize GPT-2 model and tokenizer
-        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-        self.model = GPT2LMHeadModel.from_pretrained("gpt2")
-
     def start_session(self):
         self.stacked_widget.setCurrentWidget(self.recording_page_widget)
         self.text_edit.clear()
@@ -111,49 +164,63 @@ class SocialScenarioApp(QMainWindow):
         self.is_recording = True
         self.speech_thread.start()
 
-        selected_scenario = choice(scenarios)
-        self.text_edit.append(f"<font color='blue'><b>Scenario:</b></font> {selected_scenario}")
+        selected_category = self.category_combo.currentText()
 
-        # Extracting a dialogue from the scenario
-        dialogue = "One friend suggests that they should all work together on the project to make it easier and more fun."
-        self.text_edit.append(f"<font color='green'><b>AI:</b></font> {dialogue}")
+        scenario = self.get_social_scenario(selected_category)
+        self.text_edit.append(f"<font color='blue'><b>AI:</b></font> {scenario}")
 
-        tts = gTTS(text=dialogue, lang='en')
-        tts.save("dialogue.mp3")
-        os.system("mpg123 dialogue.mp3")
+        tts = gTTS(text=scenario, lang='en')
+        tts.save("scenario.mp3")
+        os.system("mpg123 scenario.mp3")
 
     def process_input(self, response):
         self.recorded_audio += response + " "
         self.text_edit.append(f"<font color='blue'><b>User (Recorded):</b></font> {response}")
 
-        if time.time() - self.last_audio_time > 10:
+        if time.time() - self.last_audio_time > 20:
             self.speech_thread.stop_recording()
             self.is_recording = False
             self.last_audio_time = time.time()
-            self.get_ai_response()  # Trigger AI response immediately after user response
-
-    def generate_response(self, input_text):
-        input_ids = self.tokenizer.encode(input_text, return_tensors="pt")
-        output = self.model.generate(input_ids, max_length=1000, num_return_sequences=1)
-        generated_text = self.tokenizer.decode(output[0], skip_special_tokens=True)
-        return generated_text
+            self.get_ai_response()
 
     def get_ai_response(self):
-        # Get the user's input prompt from the text edit widget
-        user_input = self.text_edit.toPlainText()
+        # Prepare the conversation history
+        message_log = [{"role": "system", "content": intromessage}]
+        message_log.extend(user)
+        message_log.extend(assistant)
 
-        # Generate AI response
-        ai_response = self.generate_response(user_input)
+        # Use OpenAI's ChatCompletion API to get the chatbot's response
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
+            messages=message_log,  # The conversation history up to this point, as a list of dictionaries
+            max_tokens=3800,  # The maximum number of tokens (words or subwords) in the generated response
+            stop=None,  # The stopping sequence for the generated response, if any (not used here)
+            temperature=0.7,  # The "creativity" of the generated response (higher temperature = more creative)
+        )
 
-        # Save AI response as an audio file
+        # Find the first response from the chatbot that has text in it (some responses may not have text)
+        for choice in response.choices:
+            if "text" in choice:
+                ai_response = choice.text
+                break
+        else:
+            # If no response with text is found, return an empty string
+            ai_response = ""
+
+        # Display the AI's response
+        self.text_edit.append(f"<font color='green'><b>AI:</b></font> {ai_response}")
+
+        # Convert the AI's response to speech
         tts = gTTS(text=ai_response, lang='en')
         tts.save("ai_response.mp3")
-
-        # Play the AI response immediately after generating it
         os.system("mpg123 ai_response.mp3")
 
+        # Reset the recorded audio and time
         self.recorded_audio = ""
         self.last_audio_time = time.time()
+
+    def get_social_scenario(self, category):
+        return choice(scenarios)
 
     def closeEvent(self, event):
         if self.speech_thread.isRunning():
