@@ -1,9 +1,9 @@
 from flask import *
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session,sessionmaker
 from passlib.hash import sha256_crypt
 import subprocess
-engine = create_engine("mysql+pymysql://root:Be@verW0rks@localhost/register")
+engine = create_engine("mysql+pymysql://root:beaverworks@localhost/account") #changed localhost to 127.0.0.1
                         #mysql+pymysql//username:password@localhost/databasename)
 db = scoped_session(sessionmaker(bind=engine))
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -45,17 +45,17 @@ def register():
         username = request.form.get("username")
         password = request.form.get("password")
         confirm = request.form.get("confirm")
-        secure_password = sha256_crypt.encrypt(str(password))
+        secure_password = sha256_crypt.hash((password))#sha256_crypt.encrypt(str(password))
          
         if password == confirm:
-            db.execute("INSERT INTO users(name, username, password) VALUES(:name,:username,:password)",
-                       {"name":name,"username":username,"password":secure_password})
+            stmt = text("INSERT INTO users(name, username, password) VALUES(:name, :username, :password)")
+            db.execute(stmt, {"name": name, "username": username, "password": secure_password})
             db.commit()
             return redirect( url_for('account'))
         else:
             return render_template("login/register.html")
  
-    return render_template("register.html")
+    #return render_template("register.html")
 
 @app.route("/login",methods=["GET","POST"])
 def login():
@@ -71,7 +71,8 @@ def login():
         else:
             for password_data in passworddata:
                 if sha256_crypt.verify(password,password_data):
-                    return render_template("dashboard.html")
+                    #return render_template("dashboard.html")
+                    return redirect( url_for('dashboard'))
                 else:
                     return render_template("account.html")
         #query the database to find login information
