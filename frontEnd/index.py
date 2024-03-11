@@ -88,7 +88,7 @@ def autismResources():
 
 @app.route("/session/<category>")
 def session(category=""):
-    subprocess.Popen(["python", "../BeaverWorks-Team-166/backEnd/chat/GUIAppSession.py", category], 0)
+    subprocess.Popen(["python", "../backEnd/chat/GUIAppSession.py", category], 0)
     return render_template("subpages/startSession.html")
 
 @app.route("/registrationPage")
