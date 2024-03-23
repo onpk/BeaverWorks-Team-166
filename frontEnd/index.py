@@ -1,4 +1,5 @@
 from flask import *
+from flask import flash
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session,sessionmaker
 from passlib.hash import sha256_crypt
@@ -60,20 +61,25 @@ def register():
 @app.route("/login",methods=["GET","POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("name")
+        username = request.form.get("username")
         password = request.form.get("password")
 
-        usernamedata = db.execute("SELECT username FROM users WHERE username=:username",{"username":username}).fetchone()
-        passworddata = db.execute("SELECT password FROM users WHERE username=:username",{"username":username}).fetchone()
-
+        stmt_username = text("SELECT username FROM users WHERE username=:username")
+        stmt_password = text("SELECT password FROM users WHERE username=:username")
+        usernamedata = db.execute(stmt_username, {"username": username}).fetchone()
+        passworddata = db.execute(stmt_password, {"username": username}).fetchone()
+        print(f"Entered username: {username}")
+        print(f"Queried username: {usernamedata}")
         if usernamedata is None:
             return render_template("account.html")
         else:
             for password_data in passworddata:
                 if sha256_crypt.verify(password,password_data):
                     #return render_template("dashboard.html")
+                    #flash("sucess", 'message')
                     return redirect( url_for('dashboard'))
                 else:
+                    #flash("Incorrect", 'error')
                     return render_template("account.html")
         #query the database to find login information
     return render_template("account.html")
