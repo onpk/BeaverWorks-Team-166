@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-
-<body>
-    <div class="main">
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        
+        <div class="main">
         <div class="header">
             <nav>
                 <div class="logo">
@@ -27,12 +26,10 @@
             </nav>
         </div>
 
-        <!--Account Container-->
         <div class="container">
-        <div class="sign-in">
-            <h1>Sign In</h1>
-
-            <form action="" method="POST">
+            <div class="sign-in">
+            <h1>Register</h1>
+            <form action="{{ url_for('register')}}" method="POST">
                 <div class="form-group">
                     <input type = "text" name = "name" class = "form-control" placeholder="name" required>
                 </div>
@@ -46,18 +43,12 @@
                     <input type = "password" name = "confirm" class = "form-control" placeholder="confirm password" required>
                 </div>
                 <button class="btn" type="submit">submit</button>
-                
             </form>
-
-        <p>Don't have an account?</p> <a href="{{ url_for('registrationPage') }}"><p>Register</p></a>
-
+            </div>
         </div>
         </div>
-        
-    </div>
 
-    <div class="banner"></div>
+        <div class="banner"></div>
 
-</body>
-
+    </body>
 </html>

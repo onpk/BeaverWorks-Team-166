@@ -10,6 +10,7 @@
     position: relative;
     overflow: hidden;
     background: #F3F3F3;
+    text-align: center;
 }
 
 .landingMain {
@@ -163,8 +164,8 @@ nav{
 
 .controls{
     position: absolute;
-    right: 10%;
-    top: 50%;
+    right: 7%;
+    top: 53.5%;
     transform: translateY(-50%);
     text-align: center;
 }
@@ -210,4 +211,72 @@ nav{
 
 .categories img{
     width: 80px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.sign-in {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center; /* Center align the content inside */
+}
+
+.sign-in h1 {
+    margin-bottom: 20px;
+    color: #203640;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: calc(100% - 16px); /* Adjusted width to account for padding */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.btn {
+    width: calc(100% - 16px); /* Adjusted width to account for padding */
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+p {
+    margin-top: 15px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }

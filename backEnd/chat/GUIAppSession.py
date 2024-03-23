@@ -10,19 +10,15 @@ from PyQt5.QtGui import QFont, QColor, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 import speech_recognition as sr
 import openai
+import time
 from gtts import gTTS
 
-output_file_path = "conversation.json"
+# category = sys.argv[1] (string)
 
 # Set up OpenAI API key
 openai.api_key = "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"
 
-# Initialize user with a default value
-user = ""
-assistant = ""
-name = ""
-
-# Define scenarios
+# Define the scenarios list
 scenarios = [
     "During lunchtime at school, a group of friends are sitting together at a table in the cafeteria. They are "
     "discussing their plans for an upcoming school project and trying to figure out who will be responsible for which "
@@ -157,6 +153,8 @@ class SocialScenarioApp(QMainWindow):
         self.text_edit = QTextEdit()
         self.recording_page_layout.addWidget(self.text_edit)
 
+        self.current_scenario = None
+
     def start_session(self):
         self.stacked_widget.setCurrentWidget(self.recording_page_widget)
         self.text_edit.clear()
@@ -166,8 +164,9 @@ class SocialScenarioApp(QMainWindow):
 
         selected_category = self.category_combo.currentText()
 
-        scenario = self.get_social_scenario(selected_category)
-        self.text_edit.append(f"<font color='blue'><b>AI:</b></font> {scenario}")
+        # Extracting a dialogue from the scenario dynamically using OpenAI
+        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scnerio as I need oppurutnity for me to speak as well. Give me a dialogue for a character that is not 'You' in the scenario" + selected_scenario)
+        self.text_edit.append(f"<font color='green'><b>AI:</b></font> {dialogue}")
 
         tts = gTTS(text=scenario, lang='en')
         tts.save("scenario.mp3")
@@ -181,7 +180,26 @@ class SocialScenarioApp(QMainWindow):
             self.speech_thread.stop_recording()
             self.is_recording = False
             self.last_audio_time = time.time()
-            self.get_ai_response()
+            self.get_ai_response()  # Trigger AI response immediately after user response
+
+    def chat_with_openai(self, prompt):
+        """
+        Sends the prompt to OpenAI API using the chat interface and gets the model's response.
+        """
+        message = {
+            'role': 'user',
+            'content': prompt
+        }
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[message]
+        )
+
+        # Extract the chatbot's message from the response.
+        # Assuming there's at least one response and taking the last one as the chatbot's reply.
+        chatbot_response = response.choices[0].message['content']
+        return chatbot_response.strip()
 
     def get_ai_response(self):
         # Prepare the conversation history
@@ -189,14 +207,8 @@ class SocialScenarioApp(QMainWindow):
         message_log.extend(user)
         message_log.extend(assistant)
 
-        # Use OpenAI's ChatCompletion API to get the chatbot's response
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
-            messages=message_log,  # The conversation history up to this point, as a list of dictionaries
-            max_tokens=3800,  # The maximum number of tokens (words or subwords) in the generated response
-            stop=None,  # The stopping sequence for the generated response, if any (not used here)
-            temperature=0.7,  # The "creativity" of the generated response (higher temperature = more creative)
-        )
+        # Call the chat_with_openai function to interact with OpenAI API
+        ai_response = self.chat_with_openai(user_input)
 
         # Find the first response from the chatbot that has text in it (some responses may not have text)
         for choice in response.choices:
