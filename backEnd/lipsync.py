@@ -1,4 +1,4 @@
-import os, sys
+'''import os, sys
 import tempfile
 import gradio as gr
 import SadTalker  
@@ -220,4 +220,63 @@ if __name__ == "__main__":
 
     demo = sadtalker_demo()
     demo.queue(max_size=10)
-    demo.launch(debug=True)
+    demo.launch(debug=True)'''
+import os
+import requests
+from PIL import Image
+from io import BytesIO
+from voicetotextalt import VTT
+import boto3
+def capture_image():
+    try:
+        response = requests.get("https://thispersondoesnotexist.com/")
+        img = Image.open(BytesIO(response.content))
+        return img
+    except Exception as e:
+        print("An error occurred while capturing the image:", e)
+        return None
+def upload_image_to_s3(local_image_path, bucket_name, object_name):
+    s3 = boto3.resource('s3')
+   # s3=boto3.resource()
+    s3.upload_file(local_image_path, bucket_name, object_name)
+    object_url = f"https://%7Bbucket_name%7D.s3.amazonaws.com/%7Bobject_name%7D"
+    return object_url
+test=capture_image()
+#test.show()
+test.save("fakeface.jpg")
+
+local_image_path = '/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/fakeface.jpg'
+bucket_name = 'mainbucket'
+object_name = 'fakeface.jpg'
+
+public_url = upload_image_to_s3(local_image_path, bucket_name, object_name)
+print("Public URL:", public_url) 
+
+
+'''payload = {
+    "input_face": "/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/fakeface.jpg",
+    "input_audio": "/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/output.wav",
+}'''
+text=VTT()
+print("Now Speak")
+usertext=text.speak()
+api_key="sk-tAufDXcTCURSxuCc0vwmhP9nOZUhLTsOpvsSBnfobOq7eEQP"
+storagelink="https://storage.googleapis.com/dara-c1b52.appspot.com/daras_ai/media/b6fd0b46-e876-11ee-8dca-02420a000140/fakeface.jpg"
+
+payload = {
+    "input_face": storagelink,
+    "text_prompt": usertext,
+}
+
+
+response = requests.post(
+    "https://api.gooey.ai/v2/LipsyncTTS/",
+    headers={
+        "Authorization": "Bearer " + api_key,
+    },
+    json=payload,
+)
+assert response.ok, response.content
+
+result = response.json()
+print(response.status_code, result)

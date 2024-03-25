@@ -10,12 +10,11 @@ import time
 from gtts import gTTS
 import os
 from random import choice
-
+from secretkey import keyval
 # category = sys.argv[1] (string)
 
 # Set up OpenAI API key
-openai.api_key = "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"
-
+openai.api_key = keyval
 # Define the scenarios list
 scenarios = [
     """During lunchtime at school, a group of friends are sitting together at a table in the cafeteria. They are discussing their plans for an upcoming school project and trying to figure out who will be responsible for which tasks. One friend suggests that they should all work together on the project to make it easier and more fun. Another friend disagrees and thinks they should divide the tasks evenly to ensure a fair distribution of workload. As the debate continues, other students at nearby tables start to take notice and offer their opinions on the best approach. The group of friends ultimately come to a compromise and decide to divide the tasks fairly while also working collaboratively on the project. This scenario highlights the importance of communication and teamwork in a school setting."""
@@ -140,10 +139,11 @@ class SocialScenarioApp(QMainWindow):
             'role': 'user',
             'content': prompt
         }
+        client=openai.OpenAI(api_key=keyval)
 
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[message]
+            messages=[message], stream=True
         )
 
         # Extract the chatbot's message from the response.
