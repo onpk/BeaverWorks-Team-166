@@ -1,5 +1,4 @@
 import speech_recognition as sp
-import whisper
 
 class VTT():
     def __init__(self,outfile="outfile.txt"):

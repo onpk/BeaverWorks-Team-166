@@ -227,6 +227,7 @@ from PIL import Image
 from io import BytesIO
 from voicetotextalt import VTT
 import boto3
+import random
 def capture_image():
     try:
         response = requests.get("https://thispersondoesnotexist.com/")
@@ -249,8 +250,8 @@ local_image_path = '/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/fakefac
 bucket_name = 'mainbucket'
 object_name = 'fakeface.jpg'
 
-public_url = upload_image_to_s3(local_image_path, bucket_name, object_name)
-print("Public URL:", public_url) 
+# public_url = upload_image_to_s3(local_image_path, bucket_name, object_name)
+# print("Public URL:", public_url)
 
 
 '''payload = {
@@ -261,10 +262,11 @@ text=VTT()
 print("Now Speak")
 usertext=text.speak()
 api_key="sk-tAufDXcTCURSxuCc0vwmhP9nOZUhLTsOpvsSBnfobOq7eEQP"
-storagelink="https://storage.googleapis.com/dara-c1b52.appspot.com/daras_ai/media/b6fd0b46-e876-11ee-8dca-02420a000140/fakeface.jpg"
+storagelink="https://this-person-does-not-exist.com/img/avatar-gen1103181aaf27af2ae54908a7fb2acbb9.jpg"
+storagelinks=["https://this-person-does-not-exist.com/img/avatar-gen1103181aaf27af2ae54908a7fb2acbb9.jpg", "https://this-person-does-not-exist.com/img/avatar-gen3231aaa02bdd023aa9417530ceb622ff.jpg", "https://this-person-does-not-exist.com/img/avatar-gen75039bce0cf9ec60456ab76a727ed0c7.jpg", "https://this-person-does-not-exist.com/img/avatar-gen8908c7b637edf4cd287c05731e6c2d9a.jpg"]
 
 payload = {
-    "input_face": storagelink,
+    "input_face": storagelinks[random.randint(0, 3)],
     "text_prompt": usertext,
 }
 
@@ -280,3 +282,4 @@ assert response.ok, response.content
 
 result = response.json()
 print(response.status_code, result)
+
