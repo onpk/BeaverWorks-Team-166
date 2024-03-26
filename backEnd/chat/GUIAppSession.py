@@ -9,8 +9,9 @@ import openai
 import time
 from gtts import gTTS
 import os
-from random import choice
+from random import randint
 from secretkey import keyval
+import lipsync
 # category = sys.argv[1] (string)
 
 # Set up OpenAI API key
@@ -110,7 +111,9 @@ class SocialScenarioApp(QMainWindow):
         self.is_recording = True
         self.speech_thread.start()
 
-        selected_scenario = choice(scenarios)
+        scenarioChoice = randint(0, len(scenarios)-1)
+
+        selected_scenario = scenarios[scenarioChoice]
         self.text_edit.append(f"<font color='blue'><b>Scenario:</b></font> {selected_scenario}")
 
         # Extracting a dialogue from the scenario dynamically using OpenAI

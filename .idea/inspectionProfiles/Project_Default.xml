@@ -4,7 +4,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="154">
+          <list size="156">
             <item index="0" class="java.lang.String" itemvalue="httpx" />
             <item index="1" class="java.lang.String" itemvalue="numba" />
             <item index="2" class="java.lang.String" itemvalue="scikit-learn" />
@@ -159,6 +159,8 @@
             <item index="151" class="java.lang.String" itemvalue="pillow" />
             <item index="152" class="java.lang.String" itemvalue="passlib.hash" />
             <item index="153" class="java.lang.String" itemvalue="sqlalchemy.orm" />
+            <item index="154" class="java.lang.String" itemvalue="pymysql" />
+            <item index="155" class="java.lang.String" itemvalue="sqlalchemy" />
           </list>
         </value>
       </option>

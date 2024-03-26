@@ -242,8 +242,9 @@ def upload_image_to_s3(local_image_path, bucket_name, object_name):
     s3.upload_file(local_image_path, bucket_name, object_name)
     object_url = f"https://%7Bbucket_name%7D.s3.amazonaws.com/%7Bobject_name%7D"
     return object_url
+
+
 test=capture_image()
-#test.show()
 test.save("fakeface.jpg")
 
 local_image_path = '/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/fakeface.jpg'
@@ -258,28 +259,37 @@ object_name = 'fakeface.jpg'
     "input_face": "/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/fakeface.jpg",
     "input_audio": "/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/output.wav",
 }'''
-text=VTT()
-print("Now Speak")
-usertext=text.speak()
-api_key="sk-tAufDXcTCURSxuCc0vwmhP9nOZUhLTsOpvsSBnfobOq7eEQP"
-storagelink="https://this-person-does-not-exist.com/img/avatar-gen1103181aaf27af2ae54908a7fb2acbb9.jpg"
-storagelinks=["https://this-person-does-not-exist.com/img/avatar-gen1103181aaf27af2ae54908a7fb2acbb9.jpg", "https://this-person-does-not-exist.com/img/avatar-gen3231aaa02bdd023aa9417530ceb622ff.jpg", "https://this-person-does-not-exist.com/img/avatar-gen75039bce0cf9ec60456ab76a727ed0c7.jpg", "https://this-person-does-not-exist.com/img/avatar-gen8908c7b637edf4cd287c05731e6c2d9a.jpg"]
-
-payload = {
-    "input_face": storagelinks[random.randint(0, 3)],
-    "text_prompt": usertext,
-}
 
 
-response = requests.post(
-    "https://api.gooey.ai/v2/LipsyncTTS/",
-    headers={
-        "Authorization": "Bearer " + api_key,
-    },
-    json=payload,
-)
-assert response.ok, response.content
+def lipsync(face):
+    text = VTT()
+    print("Now Speak")
+    usertext = text.speak()
+    api_key = "sk-tAufDXcTCURSxuCc0vwmhP9nOZUhLTsOpvsSBnfobOq7eEQP"
+    storagelinks = ["https://this-person-does-not-exist.com/img/avatar-gen1103181aaf27af2ae54908a7fb2acbb9.jpg", "https://this-person-does-not-exist.com/img/avatar-gen3231aaa02bdd023aa9417530ceb622ff.jpg", "https://this-person-does-not-exist.com/img/avatar-gen75039bce0cf9ec60456ab76a727ed0c7.jpg", "https://this-person-does-not-exist.com/img/avatar-gen551abc57da291042749cb22bc20d207c.jpg"]
 
-result = response.json()
-print(response.status_code, result)
+    payload = {
+        "input_face": storagelinks[face],
+        "text_prompt": usertext,
+        "tts_provider": "AZURE_TTS",
+        "azure_voice_name": "en-US-EricNeural",
+
+    }
+
+    response = requests.post(
+        "https://api.gooey.ai/v2/LipsyncTTS/",
+        headers={
+            "Authorization": "Bearer " + api_key,
+        },
+        json=payload,
+    )
+
+    assert response.ok, response.content
+
+    result = response.json()
+    print(response.status_code, result)
+
+
+lipsync(random.randint(0, 3))
+
 
