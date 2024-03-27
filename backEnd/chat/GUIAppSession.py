@@ -9,9 +9,10 @@ import openai
 import time
 from gtts import gTTS
 import os
-from random import randint
+from random import choice
 from secretkey import keyval
-import lipsync
+from vtt import VTT
+from re import sub
 # category = sys.argv[1] (string)
 
 # Set up OpenAI API key
@@ -22,7 +23,7 @@ scenarios = [
 ]
 
 
-class SpeechRecognitionThread(QThread):
+class SpeechRecognitionThread(QThread,VTT):
     speech_detected = pyqtSignal(str)
 
     def __init__(self):
@@ -33,12 +34,12 @@ class SpeechRecognitionThread(QThread):
         # Adjust the recognizer sensitivity
         self.recognizer.energy_threshold = 1000  # You may need to adjust this value based on your environment
         self.is_running = True
-
     def stop_recording(self):
-        self.is_running = False
-
+        self.stopspeak()
     def run(self):
-        with self.microphone as source:
+        aresponse=self.speak()
+        self.speech_detected.emit(aresponse)
+        '''with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source)
 
             # Adjust phrase time limit for real-time processing
@@ -50,7 +51,7 @@ class SpeechRecognitionThread(QThread):
                 except sr.UnknownValueError:
                     pass
                 except sr.RequestError as e:
-                    print(f"Could not request results from Google Speech Recognition service; {e}")
+                    print(f"Could not request results from Google Speech Recognition service; {e}")'''
 
 
 class SocialScenarioApp(QMainWindow):
@@ -103,6 +104,7 @@ class SocialScenarioApp(QMainWindow):
         self.recording_page_layout.addWidget(self.text_edit)
 
         self.current_scenario = None
+        self.chat=[]
 
     def start_session(self):
         self.stacked_widget.setCurrentWidget(self.recording_page_widget)
@@ -111,13 +113,11 @@ class SocialScenarioApp(QMainWindow):
         self.is_recording = True
         self.speech_thread.start()
 
-        scenarioChoice = randint(0, len(scenarios)-1)
-
-        selected_scenario = scenarios[scenarioChoice]
+        selected_scenario = choice(scenarios)
         self.text_edit.append(f"<font color='blue'><b>Scenario:</b></font> {selected_scenario}")
 
         # Extracting a dialogue from the scenario dynamically using OpenAI
-        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scnerio as I need oppurutnity for me to speak as well. Give me a dialogue for a character that is not 'You' in the scenario" + selected_scenario)
+        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scnerio as I need oppurutnity for me to speak as well." )
         self.text_edit.append(f"<font color='green'><b>AI:</b></font> {dialogue}")
 
         tts = gTTS(text=dialogue, lang='en')
@@ -133,33 +133,81 @@ class SocialScenarioApp(QMainWindow):
             self.is_recording = False
             self.last_audio_time = time.time()
             self.get_ai_response()  # Trigger AI response immediately after user response
-
+    def getprev(self):
+        #chat=[]
+        user=""
+        assistant=""
+        with open("conversation.json", 'r') as json_file:
+            self.chat = json.load(json_file)
+        for c in range(2,len(self.chat)):
+            if self.chat[c]["role"]=="user":
+                if "python -u" in self.chat[c]["content"]:
+                        pass
+                else:
+                    user+=self.chat[c]["content"]
+            elif self.chat[c]["role"]=="assistant":
+                assistant+=self.chat[c]["content"]
+            else:
+                cont=self.chat[c]["content"]
+                temp=cont.split()
+                for i in temp:
+                    if i=="I'm":
+                        name=sub(r'\W+', '',temp[temp.index(i)+1])
+                if ("apologize" or "sorry") in  cont:
+                        pass
+                else:
+                    assistant+=cont
+        return [user,assistant]
+    def setupchat(self):
+        scenarios=["""You're in the cafeteria during lunch break when 
+           a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics 
+           experiment""",""" You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
+           she's been experimenting with watercolor techniques lately and would love to share her progress.""", """You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and 
+           suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.""","""You're waiting for the bus after school when Maya, a student you recognize from the drama club, approaches. She asks if she can sit next to you and mentions 
+           she's excited about the upcoming school play auditions and wonders if you plan to try out too.""",""" You're in the game room during free period when Michael, a fellow gamer, walks over. He asks if he can join your game and mentions he's been practicing a new strategy 
+           in his favorite game and is eager to test it out.""","""You're at the outdoor hangout spot after school when Sarah, a classmate you've seen around, comes over. She asks if she can sit at your table and mentions she's 
+           been feeling stressed lately and could use a friendly chat to unwind.""", """ You're in the gym during your workout session when Daniel, a classmate who's into fitness, approaches. He asks if he can share the equipment with you and mentions he's been following a new 
+           exercise routine and wants to know if you have any tips.""", """ You're in the music room practicing piano when Lily, a fellow musician, walks in. She asks if she can use the piano next to you and mentions she's been working on a 
+           new song and would love your feedback.""", """You're in the library reading zone when Ethan, a classmate you've seen around, approaches. He asks if he can join you and mentions he's been struggling to find a good book to read 
+           and wonders if you have any recommendations. """, """ You're at the art studio working on your project when Sophia, a classmate known for her creativity, comes over. She asks if she can work alongside you and mentions she's been experimenting with a 
+           new painting technique and would love to share it with you."""]
+        intromessage="""You are an AI friend who is interacting with autistic children.
+                    Your goal is to engage them in a friendly and supportive conversation, incorporating role-playing scenarios to encourage social interaction. 
+                Create a positive and inclusive environment, adapt to their preferences, and guide them through imaginative scenarios that foster communication and social skills. 
+                Remember to be patient, understanding, and encouraging throughout the interaction."""
+        intromessage+="""Your role-playing scenario is this: """+choice(scenarios)+". Please make your responses and messages based around this scenario."
+        if(os.path.getsize("conversation.json")>0):
+            intromessage+="These are previous messages you sent. Remember them as you write your responses. "+self.getprev()[1]+" These are the messages that the user sent. Remember these as well when you write your responses. "+self.getprev()[0]
+        return intromessage
     def chat_with_openai(self, prompt):
         """
         Sends the prompt to OpenAI API using the chat interface and gets the model's response.
         """
-        message = {
-            'role': 'user',
-            'content': prompt
-        }
+        intromessage=self.setupchat()
+        system = [{"role": "system", "content":intromessage.strip()}]
+        user = [{"role": "user", "content": prompt}]
+    
         client=openai.OpenAI(api_key=keyval)
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[message], stream=True
+            messages=system+user,
         )
 
         # Extract the chatbot's message from the response.
         # Assuming there's at least one response and taking the last one as the chatbot's reply.
-        chatbot_response = response.choices[0].message['content']
+        print(response)
+        chatbot_response = response.choices[0].message.content
         return chatbot_response.strip()
 
     def get_ai_response(self):
         # Get the user's input prompt from the text edit widget
         user_input = self.text_edit.toPlainText()
+        self.chat.append({"role": "user", "content": user_input})
 
         # Call the chat_with_openai function to interact with OpenAI API
         ai_response = self.chat_with_openai(user_input)
+        self.chat.append({"role": "assistant", "content": ai_response})
 
         # Save AI response as an audio file
         tts = gTTS(text=ai_response, lang='en')
@@ -172,10 +220,13 @@ class SocialScenarioApp(QMainWindow):
         self.last_audio_time = time.time()
 
     def closeEvent(self, event):
+
         if self.speech_thread.isRunning():
             self.speech_thread.stop_recording()
             self.speech_thread.wait()
         event.accept()
+        with open("conversation.json", 'w') as json_file:
+                json.dump(self.chat, json_file, indent=2)
 
 
 if __name__ == "__main__":
