@@ -13,15 +13,50 @@
     text-align: center;
 }
 
- /*
+ 
 .landingMain {
     width: 100%;
-    height: 90vh;
     position: relative;
     overflow: hidden;
     background: #F3F3F3;
+    text-align: center;
+    margin-top: 5%; /* Adjust margin-top */
 }
-*/
+
+.landingMain section {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.landingMain h2 {
+    font-size: 2.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #203640;
+}
+
+.landingMain p {
+    margin-bottom: 1.5rem;
+    color: #203640;
+    line-height: 1.6;
+    max-width: 800px; /* Adjusted max-width */
+    margin: 0 auto; /* Center align the paragraph text */
+}
+
+.landingMain .button {
+    padding: 0.5rem 1rem;
+    background-color: #203640;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.landingMain .button:hover {
+    background-color: #2559B1;
+}
 
 .banner{
     width: 100%;
