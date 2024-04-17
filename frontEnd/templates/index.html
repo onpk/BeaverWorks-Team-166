@@ -5,74 +5,52 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>OnCall</title>
+    <title>Account</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-    <div class="header">
-        <nav>
-            <div class="logo">
-                <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="OnCall Logo"></a>
-            </div>
+    <div class="main">
+        <div class="header">
+            <nav>
+                <div class="logo">
+                    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
+                </div>
+                <div class="menu">
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('account') }}">Account</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
 
-            <div class="menu">
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('account') }}">Account</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-    <div class="landingMain">
-
-        <div class="main">
+        <div class="landingMain">
+            
             <section id="about">
                 <h2>About OnCall</h2>
-                <p>OnCall is a unique and innovative solution designed to help children with autism practice their social skills through role play scenarios using generative AI and convolutional neural networks. The software tool aims to provide a supportive and interactive platform for children to engage in role-playing activities, enhancing their social and communication skills.</p>
-                <a href="#learn-more" class="button">Learn More</a>
+                <p>OnCall is a unique and innovative solution designed to help individuals with autism practice their social skills through role play scenarios using generative AI and convolutional neural networks. The software tool aims to provide a supportive and interactive platform for children to engage in role-playing activities, enhancing their social and communication skills.</p>
             </section>
 
+            <a href="#sign-in" class="button">Sign in</a>
+
+            <a href="#learn-more" class="button">Learn More</a>
+    
             <section id="how-it-works">
                 <h2>How It Works</h2>
                 <div class="video">
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID_HERE" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <a href="#sign-in" class="button">Sign in</a>
             </section>
 
-            <section id="services">
-                <h2>Our Services</h2>
-                <ul>
-                    <li>Speech Therapy</li>
-                    <li>Social Skills Training</li>
-                    <li>Behavioral Therapy</li>
-                </ul>
-                <a href="#services" class="button">View Services</a>
-            </section>
-
-            <section id="testimonials">
-                <h2>What Our Clients Are Saying</h2>
-                <blockquote>
-                    <p>“OnCall has been a lifesaver for my family. The personalized socials skills training sessions have helped my child make significant progress in his social skills.”</p>
-                    <footer>Jessica, USA</footer>
-                </blockquote>
-            </section>
-
-            <section id="booking">
-                <h2>Flexible and Convenient</h2>
-                <p>Book a Tutoring Session</p>
-                <p>Our online platform allows you to seamlessly gain a friend to practice your social skills with in a pressure-free environment.</p>
-            </section>
         </div>
+    
     </div>
 
     <div class="banner"></div>
 
-    <!--<script src="{{ url_for('static', filename='index.js') }}"></script>-->
 </body>
 
 </html>

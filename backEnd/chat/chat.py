@@ -72,11 +72,11 @@ class Chat:
             chat = []
         vclient = openai.OpenAI(api_key=keyval)
 
-        while "Bye" not in user[0]['content'].strip() or "bye" not in user[0]['content'].strip():
+        while "Bye" not in self.user[0]['content'].strip() or "bye" not in self.user[0]['content'].strip():
             # Use the entire chat history for generating the response
             
             response = vclient.chat.completions.create(
-                messages=system + chat[-10:] + user,
+                messages=system + chat[-10:] + self.user,
                 model="gpt-3.5-turbo", stream=True)
 
             reply = ""
@@ -89,18 +89,19 @@ class Chat:
             # Add the user's input and AI's response to the chat history
             user_input = VTT(outfile="outfile.txt").speak()
             user = [{"role": "user", "content": user_input}]
-            print("\nYou: ",end="")
-            print(user[0]['content'])
+            #print("\nYou: ",end="")
+            #print(user[0]['content'])
             chat.append(user[0])
             if "Bye" in user[0]['content'].strip() or "bye" in user[0]['content'].strip():
                 break
-            print("\nSystem: ")
+            #print("\nSystem: ")
             
             chat.append({"role": "assistant", "content": reply})
             self.system = [{"role": "assistant", "content": reply}]
             with open(output_file_path, 'w') as json_file:
                 json.dump(chat, json_file, indent=2)
+        return chat
     
-#chatter=Chat()
+chatter=Chat()
 #chatter.getprev()
-#chatter.chat(key)
+chatter.chat(key)

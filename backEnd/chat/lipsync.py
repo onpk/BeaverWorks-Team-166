@@ -1,4 +1,4 @@
-import os, sys
+'''import os, sys
 import tempfile
 import gradio as gr
 import SadTalker  
@@ -220,4 +220,76 @@ if __name__ == "__main__":
 
     demo = sadtalker_demo()
     demo.queue(max_size=10)
-    demo.launch(debug=True)
+    demo.launch(debug=True)'''
+import os
+import requests
+from PIL import Image
+from io import BytesIO
+from voicetotextalt import VTT
+import boto3
+import random
+def capture_image():
+    try:
+        response = requests.get("https://thispersondoesnotexist.com/")
+        img = Image.open(BytesIO(response.content))
+        return img
+    except Exception as e:
+        print("An error occurred while capturing the image:", e)
+        return None
+def upload_image_to_s3(local_image_path, bucket_name, object_name):
+    s3 = boto3.resource('s3')
+   # s3=boto3.resource()
+    s3.upload_file(local_image_path, bucket_name, object_name)
+    object_url = f"https://%7Bbucket_name%7D.s3.amazonaws.com/%7Bobject_name%7D"
+    return object_url
+
+
+test=capture_image()
+test.save("fakeface.jpg")
+
+local_image_path = '/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/fakeface.jpg'
+bucket_name = 'mainbucket'
+object_name = 'fakeface.jpg'
+
+# public_url = upload_image_to_s3(local_image_path, bucket_name, object_name)
+# print("Public URL:", public_url)
+
+
+'''payload = {
+    "input_face": "/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/fakeface.jpg",
+    "input_audio": "/Users/nikhilk/Documents/GitHub/BeaverWorks-Team-166/output.wav",
+}'''
+
+
+def lipsync(face):
+    text = VTT()
+    print("Now Speak")
+    usertext = text.speak()
+    api_key = "sk-tAufDXcTCURSxuCc0vwmhP9nOZUhLTsOpvsSBnfobOq7eEQP"
+    storagelinks = ["https://this-person-does-not-exist.com/img/avatar-gen1103181aaf27af2ae54908a7fb2acbb9.jpg", "https://this-person-does-not-exist.com/img/avatar-gen3231aaa02bdd023aa9417530ceb622ff.jpg", "https://this-person-does-not-exist.com/img/avatar-gen75039bce0cf9ec60456ab76a727ed0c7.jpg", "https://this-person-does-not-exist.com/img/avatar-gen551abc57da291042749cb22bc20d207c.jpg"]
+
+    payload = {
+        "input_face": storagelinks[face],
+        "text_prompt": usertext,
+        "tts_provider": "AZURE_TTS",
+        "azure_voice_name": "en-US-EricNeural",
+
+    }
+
+    response = requests.post(
+        "https://api.gooey.ai/v2/LipsyncTTS/",
+        headers={
+            "Authorization": "Bearer " + api_key,
+        },
+        json=payload,
+    )
+
+    assert response.ok, response.content
+
+    result = response.json()
+    print(response.status_code, result)
+
+
+lipsync(random.randint(0, 3))
+
+

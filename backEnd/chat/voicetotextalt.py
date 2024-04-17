@@ -1,16 +1,17 @@
 import speech_recognition as sp
-import whisper
 
 class VTT():
-    def __init__(self,outfile):
+    def __init__(self,outfile="outfile.txt"):
         self.outfile=outfile
         self.r=sp.Recognizer()
         
         
     def speak(self):
         filef=open(self.outfile,"w")
+    
         #sp.recognizer.adjust_for_ambient_noise(source)
         with sp.Microphone() as source:
+            self.r.adjust_for_ambient_noise(source=source)
             audio=self.r.listen(source,phrase_time_limit=5)
         ls=[]
         try:

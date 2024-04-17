@@ -13,10 +13,14 @@ import openai
 import time
 from gtts import gTTS
 
-# category = sys.argv[1] (string)
+import os
+from random import choice
+from secretkey import keyval
+from vtt import VTT
+from re import sub
 
 # Set up OpenAI API key
-openai.api_key = "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"
+openai.api_key = keyval
 
 # Define the scenarios list
 scenarios = [
@@ -35,7 +39,11 @@ intromessage = "You are an AI friend who is interacting with autistic children. 
                "through imaginative scenarios that foster communication and social skills. Remember to be patient, " \
                "understanding, and encouraging throughout the interaction."
 
+# Define the default category if no command line arguments are provided
+default_category = "Default Category"
+
 # Load existing conversation from JSON file
+output_file_path = "conversation.json"
 if os.path.exists(output_file_path) and os.path.getsize(output_file_path) > 0:
     with open(output_file_path, 'r') as json_file:
         chat = json.load(json_file)
@@ -72,7 +80,7 @@ else:
     chat = []
 
 
-class SpeechRecognitionThread(QThread):
+class SpeechRecognitionThread(QThread, VTT):
     speech_detected = pyqtSignal(str)
 
     def __init__(self):
@@ -82,20 +90,12 @@ class SpeechRecognitionThread(QThread):
         self.is_running = True
 
     def stop_recording(self):
-        self.is_running = False
+        self.stopspeak()
 
     def run(self):
-        with self.microphone as source:
-            self.recognizer.adjust_for_ambient_noise(source)
-            while self.is_running:
-                audio = self.recognizer.listen(source, phrase_time_limit=20)
-                try:
-                    response = self.recognizer.recognize_google(audio)
-                    self.speech_detected.emit(response)
-                except sr.UnknownValueError:
-                    pass
-                except sr.RequestError as e:
-                    print("Could not request results from Google Speech Recognition service; {}".format(e))
+        aresponse = self.speak()
+        self.speech_detected.emit(aresponse)
+
 
 class SocialScenarioApp(QMainWindow):
     def __init__(self):
@@ -121,7 +121,13 @@ class SocialScenarioApp(QMainWindow):
         self.button_layout.addWidget(self.category_label)
 
         self.category_combo = QComboBox()
-        self.category_combo.addItem(sys.argv[1])
+
+        # Check if command line arguments are provided
+        if len(sys.argv) > 1:
+            self.category_combo.addItem(sys.argv[1])
+        else:
+            self.category_combo.addItem(default_category)
+
         self.button_layout.addWidget(self.category_combo)
 
         self.start_session_button = QPushButton("Start Session")
@@ -154,6 +160,7 @@ class SocialScenarioApp(QMainWindow):
         self.recording_page_layout.addWidget(self.text_edit)
 
         self.current_scenario = None
+        self.chat = []
 
     def start_session(self):
         self.stacked_widget.setCurrentWidget(self.recording_page_widget)
@@ -165,7 +172,8 @@ class SocialScenarioApp(QMainWindow):
         selected_category = self.category_combo.currentText()
 
         # Extracting a dialogue from the scenario dynamically using OpenAI
-        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scnerio as I need oppurutnity for me to speak as well. Give me a dialogue for a character that is not 'You' in the scenario" + selected_scenario)
+        dialogue = self.chat_with_openai(
+            "I want actual dialogue. Don't give too much dialogue for the entire scnerio as I need oppurutnity for me to speak as well.")
         self.text_edit.append(f"<font color='green'><b>AI:</b></font> {dialogue}")
 
         tts = gTTS(text=scenario, lang='en')
@@ -182,23 +190,186 @@ class SocialScenarioApp(QMainWindow):
             self.last_audio_time = time.time()
             self.get_ai_response()  # Trigger AI response immediately after user response
 
+    def getprev(self):
+        user = ""
+        assistant = ""
+        with open("conversation.json", 'r') as json_file:
+            self.chat = json.load(json_file)
+        for c in range(2, len(self.chat)):
+            if self.chat[c]["role"] == "user":
+                if "python -u" in self.chat[c]["content"]:
+                    pass
+                else:
+                    user += self.chat[c]["content"]
+            elif self.chat[c]["role"] == "assistant":
+                assistant += self.chat[c]["content"]
+            else:
+                cont = self.chat[c]["content"]
+                temp = cont.split()
+                for i in temp:
+                    if i == "I'm":
+                        name = sub(r'\W+', '', temp[temp.index(i) + 1])
+                if ("apologize" or "sorry") in cont:
+                    pass
+                else:
+                    assistant += cont
+        return [user, assistant]
+
+    import os
+    import json
+    from random import choice
+
+    def setupchat(self):
+        # Check if the conversation file exists
+        if not os.path.exists("conversation.json"):
+            # If it doesn't exist, create it with default content
+            with open("conversation.json", 'w') as json_file:
+                json_file.write("[]")  # Writing an empty list as default content
+
+        # Load existing conversation from JSON file
+        with open("conversation.json", 'r') as json_file:
+            self.chat = json.load(json_file)
+
+        # Define scenarios list
+        scenarios = ["Your list of scenarios here..."]
+
+        # Define intro message
+        intromessage = "Your intro message here..."
+
+        # Add previous messages to the intro message if the conversation file is not empty
+        if self.chat:
+            user, assistant = self.getprev()
+            intromessage += f"These are previous messages you sent. Remember them as you write your responses. {assistant} These are the messages that the user sent. Remember these as well when you write your responses. {user}"
+
+        return intromessage
+
+    import os
+    import json
+    from random import choice
+
+    def setupchat(self):
+        # Check if the conversation file exists
+        if not os.path.exists("conversation.json"):
+            # If it doesn't exist, create it with default content
+            with open("conversation.json", 'w') as json_file:
+                json_file.write("[]")  # Writing an empty list as default content
+
+        # Load existing conversation from JSON file
+        with open("conversation.json", 'r') as json_file:
+            self.chat = json.load(json_file)
+
+        # Define scenarios list
+        scenarios = [
+            "You're in the cafeteria during lunch break when a classmate from your science class walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics experiment.",
+            "You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions she's been experimenting with watercolor techniques lately and would love to share her progress.",
+            "You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.",
+            # Add more scenarios as needed
+        ]
+
+        # Define intro message
+        intromessage = "Welcome to the chat application! This is an introduction message. Here, you can engage in friendly conversations with our AI assistant. Please select a scenario from the dropdown menu to get started."
+
+        # Add previous messages to the intro message if the conversation file is not empty
+        if self.chat:
+            user, assistant = self.getprev()
+            intromessage += f"\n\nThese are previous messages you sent. Remember them as you write your responses. {assistant} These are the messages that the user sent. Remember these as well when you write your responses. {user}"
+
+        return intromessage
+
+    def setupchat(self):
+        # Check if the conversation file exists
+        if not os.path.exists("conversation.json"):
+            # If it doesn't exist, create it with default content
+            with open("conversation.json", 'w') as json_file:
+                json_file.write("[]")  # Writing an empty list as default content
+
+        # Load existing conversation from JSON file
+        with open("conversation.json", 'r') as json_file:
+            self.chat = json.load(json_file)
+
+        # Define scenarios list
+        scenarios = [
+            "You're in the cafeteria during lunch break when a classmate from your science class walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics experiment.",
+            "You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions she's been experimenting with watercolor techniques lately and would love to share her progress.",
+            "You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.",
+            # Add more scenarios as needed
+        ]
+
+        # Define intro message
+        intromessage = "Welcome to the chat application! This is an introduction message. Here, you can engage in friendly conversations with our AI assistant. Please select a scenario from the dropdown menu to get started."
+
+        # Add previous messages to the intro message if the conversation file is not empty
+        if self.chat:
+            user, assistant = self.getprev()
+            intromessage += f"\n\nThese are previous messages you sent. Remember them as you write your responses. {assistant} These are the messages that the user sent. Remember these as well when you write your responses. {user}"
+
+        return intromessage
+
+    def getprev(self):
+        user = ""
+        assistant = ""
+        for c in range(2, len(self.chat)):
+            if self.chat[c]["role"] == "user":
+                if "python -u" in self.chat[c]["content"]:
+                    pass
+                else:
+                    user += self.chat[c]["content"]
+            elif self.chat[c]["role"] == "assistant":
+                assistant += self.chat[c]["content"]
+            else:
+                cont = self.chat[c]["content"]
+                temp = cont.split()
+                for i in temp:
+                    if i == "I'm":
+                        name = sub(r'\W+', '', temp[temp.index(i) + 1])
+                if ("apologize" or "sorry") in cont:
+                    pass
+                else:
+                    assistant += cont
+        return user, assistant
+
+    def getprev(self):
+        user = ""
+        assistant = ""
+        for c in range(2, len(self.chat)):
+            if self.chat[c]["role"] == "user":
+                if "python -u" in self.chat[c]["content"]:
+                    pass
+                else:
+                    user += self.chat[c]["content"]
+            elif self.chat[c]["role"] == "assistant":
+                assistant += self.chat[c]["content"]
+            else:
+                cont = self.chat[c]["content"]
+                temp = cont.split()
+                for i in temp:
+                    if i == "I'm":
+                        name = sub(r'\W+', '', temp[temp.index(i) + 1])
+                if ("apologize" or "sorry") in cont:
+                    pass
+                else:
+                    assistant += cont
+        return user, assistant
+
     def chat_with_openai(self, prompt):
         """
         Sends the prompt to OpenAI API using the chat interface and gets the model's response.
         """
-        message = {
-            'role': 'user',
-            'content': prompt
-        }
+        intromessage = self.setupchat()
+        system = [{"role": "system", "content": intromessage.strip()}]
+        user = [{"role": "user", "content": prompt}]
 
-        response = openai.ChatCompletion.create(
+        client = openai.OpenAI(api_key=keyval)
+
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[message]
+            messages=system + user,
         )
 
         # Extract the chatbot's message from the response.
         # Assuming there's at least one response and taking the last one as the chatbot's reply.
-        chatbot_response = response.choices[0].message['content']
+        print(response)
+        chatbot_response = response.choices[0].message.content
         return chatbot_response.strip()
 
     def get_ai_response(self):
@@ -206,9 +377,13 @@ class SocialScenarioApp(QMainWindow):
         message_log = [{"role": "system", "content": intromessage}]
         message_log.extend(user)
         message_log.extend(assistant)
+        # Get the user's input prompt from the text edit widget
+        user_input = self.text_edit.toPlainText()
+        self.chat.append({"role": "user", "content": user_input})
 
         # Call the chat_with_openai function to interact with OpenAI API
         ai_response = self.chat_with_openai(user_input)
+        self.chat.append({"role": "assistant", "content": ai_response})
 
         # Find the first response from the chatbot that has text in it (some responses may not have text)
         for choice in response.choices:
@@ -235,10 +410,13 @@ class SocialScenarioApp(QMainWindow):
         return choice(scenarios)
 
     def closeEvent(self, event):
+
         if self.speech_thread.isRunning():
             self.speech_thread.stop_recording()
             self.speech_thread.wait()
         event.accept()
+        with open("conversation.json", 'w') as json_file:
+            json.dump(self.chat, json_file, indent=2)
 
 
 if __name__ == "__main__":

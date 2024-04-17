@@ -2,26 +2,29 @@ import speech_recognition as sp
 import whisper
 
 class VTT():
-    def __init__(self,outfile):
+    def __init__(self,outfile="outfile.txt"):
         self.outfile=outfile
         self.r=sp.Recognizer()
-        
-        
+        self.isspeak=True
+    def stopspeak(self):
+        self.isspeak=False   
     def speak(self):
+        
         filef=open(self.outfile,"w")
-        #self.recognizer.adjust_for_ambient_noise(source)
         with sp.Microphone() as source:
-            audio=self.r.listen(source,phrase_time_limit=5)
-        ls=[]
-        try:
-            ls.append(self.r.recognize_whisper(audio))
-        except sp.UnknownValueError:
-            print("unrecognizable")
-        except sp.RequestError as e:
-            print("recognizer unrecognizable")
-        for i in ls:
-            filef.write(i)
-        return ls[0]
+            #self.recognizer.adjust_for_ambient_noise(source)
+            while self.isspeak:
+                audio=self.r.listen(source,phrase_time_limit=5)
+                ls=[]
+                try:
+                    ls.append(self.r.recognize_whisper(audio))
+                except sp.UnknownValueError:
+                    print("unrecognizable")
+                except sp.RequestError as e:
+                    print("recognizer unrecognizable")
+                for i in ls:
+                    filef.write(i)
+                return ls[0]
     
 
 #Possible use of the code    
