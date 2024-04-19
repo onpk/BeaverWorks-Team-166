@@ -287,9 +287,10 @@ def lipsync(face):
     assert response.ok, response.content
 
     result = response.json()
-    print(response.status_code, result)
+    #print(response.status_code, result)
+    return result
 
 
-lipsync(random.randint(0, 3))
-
-
+value = lipsync(random.randint(0, 3))
+rao = list(value["output"].values())[0]
+print(rao)
