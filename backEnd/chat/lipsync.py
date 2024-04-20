@@ -228,6 +228,7 @@ from io import BytesIO
 from voicetotextalt import VTT
 import boto3
 import random
+from webbrowser import *
 def capture_image():
     try:
         response = requests.get("https://thispersondoesnotexist.com/")
@@ -286,9 +287,14 @@ def lipsync(face):
 
     assert response.ok, response.content
 
-    result = response.json()
+    js = response.json()
+    return list(js['output'].values())[0]
     #print(response.status_code, result)
-    return result
+
+
+outlink=lipsync(random.randint(0, 3))
+print(outlink)
+open_new_tab(outlink)
 
 
 value = lipsync(random.randint(0, 3))
