@@ -262,10 +262,11 @@ object_name = 'fakeface.jpg'
 }'''
 
 
-def lipsync(face):
-    text = VTT()
-    print("Now Speak")
-    usertext = text.speak()
+def lipsync(face, ai_response):
+    #text = VTT()
+    #print("Now Speak")
+    #usertext = text.speak()
+    usertext = ai_response
     api_key = "sk-tAufDXcTCURSxuCc0vwmhP9nOZUhLTsOpvsSBnfobOq7eEQP"
     storagelinks = ["https://this-person-does-not-exist.com/img/avatar-gen1103181aaf27af2ae54908a7fb2acbb9.jpg", "https://this-person-does-not-exist.com/img/avatar-gen3231aaa02bdd023aa9417530ceb622ff.jpg", "https://this-person-does-not-exist.com/img/avatar-gen75039bce0cf9ec60456ab76a727ed0c7.jpg", "https://this-person-does-not-exist.com/img/avatar-gen551abc57da291042749cb22bc20d207c.jpg"]
 
@@ -288,15 +289,6 @@ def lipsync(face):
     assert response.ok, response.content
 
     js = response.json()
+    open_new_tab(list(js['output'].values())[0])
     return list(js['output'].values())[0]
     #print(response.status_code, result)
-
-
-outlink=lipsync(random.randint(0, 3))
-print(outlink)
-open_new_tab(outlink)
-
-
-value = lipsync(random.randint(0, 3))
-rao = list(value["output"].values())[0]
-print(rao)
