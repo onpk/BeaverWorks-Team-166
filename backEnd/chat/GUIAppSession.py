@@ -428,7 +428,7 @@ class SocialScenarioApp(QMainWindow):
 
         # Play the video of the AI response after it is generated
         outlink=lipsync.lipsync(random.randint(0, 3), ai_response)
-        print(outlink)
+        # print(outlink)
 
         self.recorded_audio = ""
         self.last_audio_time = time.time()
