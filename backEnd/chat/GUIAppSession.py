@@ -336,7 +336,7 @@ class SocialScenarioApp(QMainWindow):
         self.text_edit.append(f"<font color='blue'><b>Scenario:</b></font> {self.mainstr}")
 
         # Extracting a dialogue from the scenario dynamically using OpenAI
-        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scenario as I need opportunity for me to speak as well." )
+        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scenario as I need opportunity for me to speak as well. Also please talk in the first person" )
         self.text_edit.append(f"<font color='green'><b>AI:</b></font> {dialogue}")
 
         '''tts = gTTS(text=dialogue, lang='en')
@@ -404,7 +404,7 @@ class SocialScenarioApp(QMainWindow):
                     Your goal is to engage them in a friendly and supportive conversation, incorporating role-playing scenarios to encourage social interaction. 
                 Create a positive and inclusive environment, adapt to their preferences, and guide them through imaginative scenarios that foster communication and social skills. 
                 Remember to be patient, understanding, and encouraging throughout the interaction."""
-        intromessage+="""Your role-playing scenario is this: """+category+". Please make your responses and messages based around this scenario."
+        intromessage+="""Your role-playing scenario is this: """+category+". Please make your responses and messages based around this scenario. Also, when talking about characters, please talk in the first person"
         if(os.path.getsize("backEnd/chat/conversation.json")>0):
             intromessage+="These are previous messages you sent. Remember them as you write your responses. "+self.getprev()[1]+" These are the messages that the user sent. Remember these as well when you write your responses. "+self.getprev()[0]
         return intromessage
