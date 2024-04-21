@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session,sessionmaker
 from passlib.hash import sha256_crypt
 import subprocess
-engine = create_engine("mysql+pymysql://root:beaverworks@localhost/account") #changed localhost to 127.0.0.1
+engine = create_engine("mysql+pymysql://root:beaverworks@192.168.0.144/account") #changed localhost to 127.0.0.1
                         #mysql+pymysql//username:password@localhost/databasename)
 db = scoped_session(sessionmaker(bind=engine))
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -94,7 +94,7 @@ def autismResources():
 
 @app.route("/session/<category>")
 def session(category=""):
-    subprocess.Popen(["python", "backEnd\chat\GUIAppSession.py", category], 0)
+    subprocess.Popen(["python", "backEnd/chat/GUIAppSession.py", category], 0)
     return render_template("subpages/startSession.html")
 
 @app.route("/registrationPage")
