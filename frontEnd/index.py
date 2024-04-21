@@ -114,4 +114,4 @@ def github():
     return redirect("https://github.com/onpk/BeaverWorks-Team-166")
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0")

@@ -209,28 +209,25 @@ from re import sub
 import lipsync
 import random
 
-try:
-    category = sys.argv[1]
-except:
-    category = ""
 
-print(category)
+
+#print(category)
 
 # Set up OpenAI API key
 openai.api_key = keyval
 # Define the scenarios list
-scenarios=["""You're in the cafeteria during lunch break when 
+scenarios={"School":"""You're in the cafeteria during lunch break when 
            a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics 
-           experiment""",""" You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
-           she's been experimenting with watercolor techniques lately and would love to share her progress.""", """You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and 
-           suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.""","""You're waiting for the bus after school when Maya, a student you recognize from the drama club, approaches. She asks if she can sit next to you and mentions 
-           she's excited about the upcoming school play auditions and wonders if you plan to try out too.""",""" You're in the game room during free period when Michael, a fellow gamer, walks over. He asks if he can join your game and mentions he's been practicing a new strategy 
-           in his favorite game and is eager to test it out.""","""You're at the outdoor hangout spot after school when Sarah, a classmate you've seen around, comes over. She asks if she can sit at your table and mentions she's 
-           been feeling stressed lately and could use a friendly chat to unwind.""", """ You're in the gym during your workout session when Daniel, a classmate who's into fitness, approaches. He asks if he can share the equipment with you and mentions he's been following a new 
-           exercise routine and wants to know if you have any tips.""", """ You're in the music room practicing piano when Lily, a fellow musician, walks in. She asks if she can use the piano next to you and mentions she's been working on a 
-           new song and would love your feedback.""", """You're in the library reading zone when Ethan, a classmate you've seen around, approaches. He asks if he can join you and mentions he's been struggling to find a good book to read 
-           and wonders if you have any recommendations. """, """ You're at the art studio working on your project when Sophia, a classmate known for her creativity, comes over. She asks if she can work alongside you and mentions she's been experimenting with a 
-           new painting technique and would love to share it with you."""]
+           experiment""","Summer":""" You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
+           she's been experimenting with watercolor techniques lately and would love to share her progress.""","School":"""You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and 
+           suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.""","Theater":"""You're waiting for the bus after school when Maya, a student you recognize from the drama club, approaches. She asks if she can sit next to you and mentions 
+           she's excited about the upcoming school play auditions and wonders if you plan to try out too.""","Friends":""" You're in the game room during free period when Michael, a fellow gamer, walks over. He asks if he can join your game and mentions he's been practicing a new strategy 
+           in his favorite game and is eager to test it out.""","School":"""You're at the outdoor hangout spot after school when Sarah, a classmate you've seen around, comes over. She asks if she can sit at your table and mentions she's 
+           been feeling stressed lately and could use a friendly chat to unwind.""", "Sports":""" You're in the gym during your workout session when Daniel, a classmate who's into fitness, approaches. He asks if he can share the equipment with you and mentions he's been following a new 
+           exercise routine and wants to know if you have any tips.""","Theater":""" You're in the music room practicing piano when Lily, a fellow musician, walks in. She asks if she can use the piano next to you and mentions she's been working on a 
+           new song and would love your feedback.""","Summer":"""You're in the library reading zone when Ethan, a classmate you've seen around, approaches. He asks if he can join you and mentions he's been struggling to find a good book to read 
+           and wonders if you have any recommendations. ""","Summer":""" You're at the art studio working on your project when Sophia, a classmate known for her creativity, comes over. She asks if she can work alongside you and mentions she's been experimenting with a 
+           new painting technique and would love to share it with you."""}
 
 
 class SpeechRecognitionThread(QThread,VTT):
@@ -289,7 +286,7 @@ class SocialScenarioApp(QMainWindow):
         self.button_layout.addWidget(self.start_session_button)
 
         self.quit_button = QPushButton("Quit")
-        self.quit_button.clicked.connect(self.close)
+        self.quit_button.clicked.connect(exit)
         self.button_layout.addWidget(self.quit_button)
 
         self.stacked_widget = QStackedWidget()
@@ -322,17 +319,29 @@ class SocialScenarioApp(QMainWindow):
         #self.recorded_audio = ""
         self.is_recording = True
         self.speech_thread.start()
-
-        selected_scenario = choice(scenarios)
-        self.text_edit.append(f"<font color='blue'><b>Scenario:</b></font> {selected_scenario}")
+        
+        
+        #selected_scenario = choice(scenarios)
+        category=sys.argv[1]
+        if(list(scenarios.keys()).count(category)>1):
+            l=[]
+            for i in scenarios.items():
+                if i[0]==category:
+                    l.append(i[1])
+            self.mainstr=choice(l)
+        elif(list(scenarios.keys()).count(category)==1):
+            self.mainstr=scenarios[category]
+        else:
+            self.mainstr=""
+        self.text_edit.append(f"<font color='blue'><b>Scenario:</b></font> {self.mainstr}")
 
         # Extracting a dialogue from the scenario dynamically using OpenAI
-        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scnerio as I need oppurutnity for me to speak as well." )
+        dialogue = self.chat_with_openai("I want actual dialogue. Don't give too much dialogue for the entire scenario as I need opportunity for me to speak as well." )
         self.text_edit.append(f"<font color='green'><b>AI:</b></font> {dialogue}")
 
-        tts = gTTS(text=dialogue, lang='en')
+        '''tts = gTTS(text=dialogue, lang='en')
         tts.save("dialogue.mp3")
-        os.system("mpg123 dialogue.mp3")
+        os.system("mpg123 dialogue.mp3")'''
 
     def process_input(self, response):
         self.recorded_audio += response + " "
@@ -368,24 +377,34 @@ class SocialScenarioApp(QMainWindow):
                 else:
                     assistant+=cont
         return [user,assistant]
-    def setupchat(self):
-        scenarios=["""You're in the cafeteria during lunch break when 
+    def setupchat(self,category="School"):
+        scenarios={"School":"""You're in the cafeteria during lunch break when 
            a classmate from your science class, walks over. He asks if he can sit with you and mentions he's curious about your opinion on the latest physics 
-           experiment""",""" You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
-           she's been experimenting with watercolor techniques lately and would love to share her progress.""", """You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and 
-           suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.""","""You're waiting for the bus after school when Maya, a student you recognize from the drama club, approaches. She asks if she can sit next to you and mentions 
-           she's excited about the upcoming school play auditions and wonders if you plan to try out too.""",""" You're in the game room during free period when Michael, a fellow gamer, walks over. He asks if he can join your game and mentions he's been practicing a new strategy 
-           in his favorite game and is eager to test it out.""","""You're at the outdoor hangout spot after school when Sarah, a classmate you've seen around, comes over. She asks if she can sit at your table and mentions she's 
-           been feeling stressed lately and could use a friendly chat to unwind.""", """ You're in the gym during your workout session when Daniel, a classmate who's into fitness, approaches. He asks if he can share the equipment with you and mentions he's been following a new 
-           exercise routine and wants to know if you have any tips.""", """ You're in the music room practicing piano when Lily, a fellow musician, walks in. She asks if she can use the piano next to you and mentions she's been working on a 
-           new song and would love your feedback.""", """You're in the library reading zone when Ethan, a classmate you've seen around, approaches. He asks if he can join you and mentions he's been struggling to find a good book to read 
-           and wonders if you have any recommendations. """, """ You're at the art studio working on your project when Sophia, a classmate known for her creativity, comes over. She asks if she can work alongside you and mentions she's been experimenting with a 
-           new painting technique and would love to share it with you."""]
+           experiment""","Summer":""" You're studying in the library when an art enthusiast approaches. She asks if the seat next to you is taken and mentions 
+           she's been experimenting with watercolor techniques lately and would love to share her progress.""","School":"""You're working on a group project in the classroom when Alex, a classmate known for their musical talents, comes over. They ask if they can join your group and 
+           suggest incorporating music into the presentation since they recently composed a piece inspired by the topic.""","Theater":"""You're waiting for the bus after school when Maya, a student you recognize from the drama club, approaches. She asks if she can sit next to you and mentions 
+           she's excited about the upcoming school play auditions and wonders if you plan to try out too.""","Friends":""" You're in the game room during free period when Michael, a fellow gamer, walks over. He asks if he can join your game and mentions he's been practicing a new strategy 
+           in his favorite game and is eager to test it out.""","School":"""You're at the outdoor hangout spot after school when Sarah, a classmate you've seen around, comes over. She asks if she can sit at your table and mentions she's 
+           been feeling stressed lately and could use a friendly chat to unwind.""", "Sports":""" You're in the gym during your workout session when Daniel, a classmate who's into fitness, approaches. He asks if he can share the equipment with you and mentions he's been following a new 
+           exercise routine and wants to know if you have any tips.""","Theater":""" You're in the music room practicing piano when Lily, a fellow musician, walks in. She asks if she can use the piano next to you and mentions she's been working on a 
+           new song and would love your feedback.""","Summer":"""You're in the library reading zone when Ethan, a classmate you've seen around, approaches. He asks if he can join you and mentions he's been struggling to find a good book to read 
+           and wonders if you have any recommendations. ""","Summer":""" You're at the art studio working on your project when Sophia, a classmate known for her creativity, comes over. She asks if she can work alongside you and mentions she's been experimenting with a 
+           new painting technique and would love to share it with you."""}
+        # if(list(scenarios.keys()).count(category)>1):
+        #     l=[]
+        #     for i in scenarios.items():
+        #         if i[0]==category:
+        #             l.append(i[1])
+        #     mainstr=choice(l)
+        # elif(list(scenarios.keys()).count(category)==1):
+        #     mainstr=scenarios[category]
+        # else:
+        #     mainstr=""
         intromessage="""You are an AI friend who is interacting with autistic children.
                     Your goal is to engage them in a friendly and supportive conversation, incorporating role-playing scenarios to encourage social interaction. 
                 Create a positive and inclusive environment, adapt to their preferences, and guide them through imaginative scenarios that foster communication and social skills. 
                 Remember to be patient, understanding, and encouraging throughout the interaction."""
-        intromessage+="""Your role-playing scenario is this: """+choice(scenarios)+". Please make your responses and messages based around this scenario."
+        intromessage+="""Your role-playing scenario is this: """+category+". Please make your responses and messages based around this scenario."
         if(os.path.getsize("backEnd/chat/conversation.json")>0):
             intromessage+="These are previous messages you sent. Remember them as you write your responses. "+self.getprev()[1]+" These are the messages that the user sent. Remember these as well when you write your responses. "+self.getprev()[0]
         return intromessage
@@ -393,7 +412,12 @@ class SocialScenarioApp(QMainWindow):
         """
         Sends the prompt to OpenAI API using the chat interface and gets the model's response.
         """
-        intromessage=self.setupchat()
+        try:
+            intromessage=self.setupchat(self.mainstr)
+            #category = 
+        except:
+            intromessage=self.setupchat()
+        
         system = [{"role": "system", "content":intromessage.strip()}]
         user = [{"role": "user", "content": prompt}]
     
