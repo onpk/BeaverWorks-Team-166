@@ -31,12 +31,15 @@
             
             <section id="about">
                 <h2>About OnCall</h2>
-                <p>OnCall is a unique and innovative solution designed to help individuals with autism practice their social skills through role play scenarios using generative AI and convolutional neural networks. The software tool aims to provide a supportive and interactive platform for children to engage in role-playing activities, enhancing their social and communication skills.</p>
+                <p>OnCall is a unique and innovative solution designed to help individuals with autism practice their social skills through role play scenarios using generative AI and convolutional neural networks. The software tool aims to provide a supportive and interactive platform for children to engage in role-playing activities, enhancing their social and communication skills. This product was developed for the MIT Beaver Works CRE[AT]E Competition by 5 High School Sophomores at Thomas Jefferson High School for Science and Technology in Northern Virginia.</p>
             </section>
 
-            <a href="#sign-in" class="button">Sign in</a>
+            <a href="{{ url_for('account') }}" class="button">Sign in</a>
+            <a href="{{ url_for('github') }}" class="button" target="_blank" rel="noopener noreferrer">Github Repository/Install</a>
+            <a href="{{ url_for('create') }}" class="button" target="_blank" rel="noopener noreferrer">Beaver Works CRE[AT]E</a>
+            <a href="{{ url_for('docs') }}" class="button" target="_blank" rel="noopener noreferrer">On Call Documentation</a>
 
-            <a href="#learn-more" class="button" onclick="{{ url_for('autismResources') }}">Learn More</a>
+
     
             <section id="how-it-works">
                 <h2>How It Works</h2>

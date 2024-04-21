@@ -100,7 +100,18 @@ def session(category=""):
 @app.route("/registrationPage")
 def registrationPage():
     return render_template("login/register.html")
+
+@app.route("/create")
+def create():
+    return redirect("https://sites.google.com/view/beaver-works-assistive-tech/create-challenge/the-challenge")
     
+@app.route("/docs")
+def docs():
+    return redirect("https://docs.google.com/document/d/1NVmfb9-BZyq1qKGILPp8CuBjvJc1j0bb0a5SEh6AS7A/edit?usp=sharing")
+
+@app.route("/github")
+def github():
+    return redirect("https://github.com/onpk/BeaverWorks-Team-166")
 
 if __name__ == "__main__":
     app.run()
