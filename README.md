@@ -1,7 +1,7 @@
 # MIT Beaver Works CREATE Challenge Team 166
-Our website has not launched publicly yet, however, you can access our prototype here on this github page.
-
 [Documentation](https://docs.google.com/document/d/1NVmfb9-BZyq1qKGILPp8CuBjvJc1j0bb0a5SEh6AS7A/edit)
+
+Our website has not launched publicly yet, however, you can access our prototype here on this github page.
 
 ## Using the Product
 
