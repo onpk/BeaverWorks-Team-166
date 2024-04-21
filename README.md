@@ -3,7 +3,7 @@
 
 
 MIT Beaver Works Challenge code
-## Setting Up The Lipsync Environemtn
+## Setting Up The Lipsync Environment
 
 If you wish to use a virtual environment, use the project command line to run
 ```bash
