@@ -17,10 +17,7 @@ Next, Using the terminal, navigate to the repository or folder (BeaverWorks-Team
   pip install -r requirements.txt
   ```
 
-Once the project requirements are installed, in the same directory run these two commands:
-```bash
-  cd frontEnd
-  ```
+Once the project requirements are installed, navigate to the frontEnd folder and run the file titled:
 ```bash
   py index.py
   ```
