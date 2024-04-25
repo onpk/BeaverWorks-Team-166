@@ -27,6 +27,13 @@ After that, ctrl + click the link that appears in your terminal that looks like 
    * Running on http://127.0.0.1:5000
   ```
 
+If an ImportError occurs after running the index.py file, try running this in the terminal. These commands should hopefully make the code work:
+```bash
+  pip uninstall black
+  pip uninstall click
+  pip install black
+  pip install click
+  ```
 A pre-deployment version of the website that is locally running on your machine will appear. The actual website has not been released publicly yet. Think of this local server as the program itself and not a website.
 
 Click on "Dashboard"
