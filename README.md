@@ -19,7 +19,7 @@ Next, Using the terminal, navigate to the repository or folder (BeaverWorks-Team
 
 Once the project requirements are installed, navigate to the frontEnd folder and run the file titled:
 ```bash
-  py index.py
+  index.py
   ```
 
 After that, ctrl + click the link that appears in your terminal that looks like this:
